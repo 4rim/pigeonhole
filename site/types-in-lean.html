@@ -1,0 +1,545 @@
+<!DOCTYPE html><html lang='en'>
+<head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><link rel='stylesheet' type='text/css' href='../css/posts.css'></head>
+<body>
+<header>
+<nav>
+          <b><a href="../site/index.html">home</a></b><br />
+          <b><a href="../site/about.html">about</a></b><br />
+          <b><a href="../site/journal.html">journal</a></b><br />
+          <b><a href="../site/nest.html">nest</a></b><br />
+          </nav></header>
+<main>
+<h1>types-in-lean</h1><p>Lean is a functional programming language and a proof assistant. I
+suspect that more people are familiar with the former than the latter;
+but a proof assistant is what it sounds like: some software or a suite
+of software that helps the user write formal proofs and verify their
+correctness.</p>
+<p><em>Why</em> such a thing is possible is far outside of the scope of
+this post, although there exist rich and long-lived theoretical
+underpinnings such as the <a
+href="https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence">Curry-Howard
+correspondence</a> and <a
+href="https://en.wikipedia.org/wiki/Typed_lambda_calculus">typed lambda
+calculi</a> which one could spend their entire life studying.</p>
+<p>There are a variety of resources for learning to Lean online, which
+I’ll include at the end of this post.</p>
+<p>But since Lean’s target audience tends to be mathematicians and
+computer scientists (or both), and since it draws on a lot of deep
+theoretical concepts, it’s hard to simply “pick it up” as you would a
+language like Python. And, as well-written as all the previously
+mentioned resources can be, it can still be overwhelming to shuffle
+through the documentation at the beginning.</p>
+<p>So, this post is a walkthrough where we define basic algebraic
+structures and hopefully gain some intuition about formalizing
+mathematical definitions. It’s by no means a comprehensive or even
+functional introduction to Lean. I cover a lot of things very shallowly
+and it’s my hope that this rouses curiosity more than anything else, as
+you get your bearings with this powerful language.</p>
+<p>I don’t assume any background in abstract algebra, and provide all
+definitions. If you’ve ever read or written a program before, it might
+be a smoother experience for you, but this is not a necessary
+prerequisite either. It would be nice if you have Lean installed on your
+computer (<a href="https://lean-lang.org/download/">the installation
+page is here</a>), or perhaps the <a
+href="https://live.lean-lang.org/">live-lean</a> tab open in your
+browser, so you can practice writing the examples; there are also some
+simple, and of course optional exercises.</p>
+<h2 id="basics-of-defining-variables-and-structures">Basics of defining
+variables and structures</h2>
+<p>Defining a pretty tame variable (like a natural number) is relatively
+familiar.</p>
+<pre class="lean"><code>def var : Nat := 4</code></pre>
+<p>Read the above as: define a variable named <code>var</code> to be of
+type <code>Nat</code> (read the colon as “of type”) and to hold the
+value <code>4</code>. In mathematics, the symbol <code>:=</code> means
+definition.</p>
+<p>Negative numbers and fractionals are similarly straightforward.</p>
+<pre class="lean"><code>def a : Int := -2
+def b : Float := 1/3</code></pre>
+<p>This is cool and all, but what about more complicated data
+structures? What if we want to express a point, or a coordinate on a
+Cartesian plane? Lean lets us define new types pretty easily, seen
+below, using <code>structure</code>. Note that types should be in
+uppercase to distinguish them from variables, similar to Haskell.</p>
+<pre class="lean"><code>structure Point where
+    x : Float
+    y : Float
+deriving Repr</code></pre>
+<p>It’s reminiscent of structs in C, where a variable can hold fields of
+information. The <code>deriving Repr</code> part just lets us print the
+Point we instantiate, like this:</p>
+<pre class="lean"><code>def origin : Point := { x := 0.0, y := 0.0 }
+
+#print origin
+/- def origin : Point := { x := 0, y := 0 } -/</code></pre>
+<p>The message in the block comment <code>/- -/</code> is what you
+should see in the Lean prompts on the right-hand side of the screen.</p>
+<p>But there are a lot of different numeric types in Lean
+(<code>Int</code>, <code>Nat</code>, <code>Float</code>,
+<code>Real</code>, and so on. What if we don’t necessarily care what
+type of number our <code>Point</code> can hold, as long as both our
+<code>x</code> and <code>y</code> are the same type? This sort of
+flexibility is called “polymorphism”, and is readily supported by
+Lean:</p>
+<pre class="lean"><code>structure PPoint (α : Type) where
+    x : α
+    y : α
+deriving Repr
+    
+def intPoint : PPoint Int := { x := -1, y := 10 }
+def natPoint : PPoint Nat := { x := 0, y := 1 }
+def fPoint : PPoint Float := { x := 1.2, y := 54.1 }</code></pre>
+<p>Try printing each, and maybe come up with a <code>PPoint</code> which
+takes type <code>Real</code>. Maybe a point with an x-value of <span
+class="math display"><em>π</em></span> and a y-value of <span
+class="math display"><em>e</em></span>? The world is your oyster (by
+which I mean the world is <span
+class="math display">ℝ</span>-valued).</p>
+<p>When we see a type in parentheses in the definition of a structure or
+a function, we can read it as “takes an argument of [that type]”. For
+example, in the above case, we see that the structure
+<code>PolyPoint</code> takes an argument of <code>α</code>, which is a
+type. In Lean, generic placeholder types are frequently referred to with
+Greek letters. You can type <code>α</code> as <code>\a</code> into a
+text editor that supports writing in Lean.</p>
+<h2 id="groups">Groups</h2>
+<p>Groups are an important algebraic structure, likely the first
+introduced in an abstract algebra course. Formally, it is defined as a
+set <span class="math display"><em>G</em></span> with a binary operation
+(or a law of composition), say <span class="math display">⋅</span>,
+written <span class="math display">(<em>G</em>,⋅)</span>. The operation
+which follows a few axioms:</p>
+<ol type="1">
+<li>The law of composition must be associative; that is, for <span
+class="math display"><em>a</em>, <em>b</em>, <em>c</em></span> in <span
+class="math display"><em>G</em>, <em>a</em> ⋅ (<em>b</em>⋅<em>c</em>) = (<em>a</em>⋅<em>b</em>) ⋅ <em>c</em></span></li>
+<li>There must exist an identity element <span
+class="math display"><em>e</em></span> in <span
+class="math display"><em>G</em></span>; for all <span
+class="math display"><em>a</em></span> in <span
+class="math display"><em>G</em>, <em>a</em> ⋅ <em>e</em> = <em>a</em></span></li>
+<li>For all elements in the group, there must exist an inverse; for all
+<span class="math display"><em>a</em></span> in <span
+class="math display"><em>G</em></span>, the inverse of <span
+class="math display"><em>a</em></span>, written <span
+class="math display"><em>a</em><sup>−1</sup></span>, is also in <span
+class="math display"><em>G</em></span>.</li>
+</ol>
+<p>To return to Earth for a bit, some examples of groups are the
+integers under addition, the real numbers under multiplication, and the
+symmetries of a triangle under composition. Convince yourself that the
+group axioms hold for all of these. Particularly, what is the identity
+element of each of these groups? What do inverses of elements look
+like?</p>
+<details>
+<summary>
+Click for answers (plus some handy vocabulary).
+</summary>
+<ul>
+<li>The integers under multiplication, written <span
+class="math display">(ℤ,+)</span>, are a group. The identity is <span
+class="math display">0</span>, since <span class="math display">0</span>
+plus any integer is the integer. The inverse of an element <span
+class="math display"><em>a</em></span> is <span
+class="math display"> − <em>a</em></span>, since for any integer <span
+class="math display"><em>a</em></span>, <span
+class="math display"><em>a</em> + (−<em>a</em>) = 0</span>. Since the
+operation is also commutative, this is also called an <strong>abelian
+group</strong>.</li>
+<li>The real numbers under multiplication, <span
+class="math display">(ℝ,⋅)</span>, are a group. The identity is <span
+class="math display">1</span>, and the inverse of an element <span
+class="math display"><em>a</em></span> is <span
+class="math display">$$\frac{1}{a}$$</span>, or the reciprocal of <span
+class="math display"><em>a</em></span>.</li>
+<li>The symmetries of a triangle under composition is also called the
+<strong>dihedral group of degree 3</strong>, <strong>the dihedral group
+of order 6</strong>, or <span
+class="math display"><em>D</em><sub>3</sub></span> (sometimes <span
+class="math display"><em>D</em><sub>6</sub></span>). The
+<strong>order</strong> of a group is how many elements are contained in
+it. The identity is simply not flipping or rotating the triangle at all.
+The inverse of any rotation or reflection is just rotating or reflecting
+it in the other direction, so that you return to the original
+orientation.</li>
+</ul>
+</details>
+<p>Given a formal definition, it is sometimes not that bad to transcribe
+it, almost word-for-word into Lean:</p>
+<pre class="lean"><code>structure myGroup (α : Type) where
+    op : α → α → α
+    idn : α
+    inv : α → α
+    assoc : ∀ (a b c : α), mul (mul a b) c = mul a (mul b c)
+    op_idn : ∀ (a : α), mul a idn = a 
+    op_inv : ∀ (a : α), mul a (inv a) = idn</code></pre>
+<p>But while this is a valid implementation of a group, it isn’t the
+most extensible or illustrative.</p>
+<p>This is because groups don’t exist in a vaccum. They are a single
+part of a hierarchy of algebraic structures.</p>
+<p>At the highest level is a structure that is a set with <em>only</em>
+a closed binary operator defined. “Closedness” or closure in math simply
+means that if we use two elements belonging to a certain structure in a
+binary operation, the result of that binary operation must still belong
+to that structure. It need not be associative, and we don’t need
+identities or inverses or any of that. This is a
+<strong>magma</strong>.</p>
+<p>If we have a magma with an operator that is also
+<em>associative</em>, this is a <strong>semigroup</strong>.</p>
+<p>A semigroup with an identity is called a <strong>monoid</strong>.</p>
+<p>And finally, a monoid with inverses is a group.</p>
+<p>The higher structures contain the lower structures such that every
+group is a monoid, every monoid is also a semigroup, and so on.</p>
+<p><img src="../media/hierarchy.png" /></p>
+<p>(There are other structures, like quasigroups and loops, each with
+their own constraints, but these aren’t as relevant.)</p>
+<p>We can see that it might be a better idea to take into account the
+larger picture, the “family tree” of these structures, when implementing
+groups. Something you might do is define the simplest structure—a
+magma—first, before <em>extending</em> it to get to a group.</p>
+<pre class="lean4"><code>structure myMagma (α : Type) where
+    mul : α → α → α
+    
+structure mySemigroup (α : Type) extends myMagma α where
+    assoc : ∀ (a b c : α), mul (mul a b) c = mul a (mul b c)</code></pre>
+<p>Hopefully, defining a monoid and a group is more straightforward from
+here on out, now that we have some scaffolding.</p>
+<details>
+<summary>
+Here is how I implemented a monoid and a group.
+</summary>
+<pre class="lean4"><code>structure myMonoid (α : Type) extends mySemigroup α where
+    id : α
+    mul_id : ∀ (a : α), mul a id = a
+    
+structure myGroup (α : Type) extends myMonoid α where
+    inv : α → α
+    mul_inv : ∀ (a : α), mul a (inv a) = id</code></pre>
+</details>
+<p>It might be illuminating to see what the developers have done in
+mathlib. Reading the source as if it were documentation can be helpful
+when implementing types, even if what you’re trying to build doesn’t
+exist in mathlib. But we’re lucky that most of undergraduate algebra has
+already been formalized, so let’s go check it out.</p>
+<p><span class="sidenote">If you go straight to GitHub for the source
+code of mathlib4 and find the definitions of these structures, a lot of
+them will look quite empty with only a single line beginning with
+<code>#align</code> as their definition. This just tells Lean to
+fallback on the mathlib3 definitions, which you can still view in the <a
+href="https://leanprover-community.github.io/mathlib_docs/">mathlib3
+documentation</a>.)</span></p>
+<pre class="lean4"><code>class Group (G : Type u) extends DivInvMonoid : Type u
+    mul : G → G → G
+    mul_assoc : ∀ (a b c : G), a * b * c = a * (b * c)
+    one : G
+    one_mul : ∀ (a : G), 1 * a = a
+    mul_one : ∀ (a : G), a * 1 = a
+    npow : ℕ → G → G
+    npow_zero : ∀ (x : G), Monoid.npow 0 x = 1
+    npow_succ : ∀ (n : ℕ) (x : G), Monoid.npow (n + 1) x = Monoid.npow n x * x
+    inv : G → G
+    div : G → G → G
+    div_eq_mul_inv : ∀ (a b : G), a / b = a * b⁻¹
+    zpow : ℤ → G → G
+    zpow_zero&#39; : ∀ (a : G), DivInvMonoid.zpow 0 a = 1
+    zpow_succ&#39; : ∀ (n : ℕ) (a : G), DivInvMonoid.zpow (Int.ofNat n.succ) a
+        = DivInvMonoid.zpow (Int.ofNat n) a * a
+    zpow_neg&#39; : ∀ (n : ℕ) (a : G), DivInvMonoid.zpow (Int.negSucc n) a
+        = (DivInvMonoid.zpow (↑n.succ) a)⁻¹
+    mul_left_inv : ∀ (a : G), a⁻¹ * a = 1</code></pre>
+<p>There’s a lot to unpack, so let’s focus on a handful of the things
+that stand out. One is that the mathlib developers also take into
+account the hierarchy of algebraic structures. I’ll include the “type
+signatures” of each of the structures for posteriority, though I’ll link
+directly to their definitions as well. Let’s start from the bottom of
+the hierarchy.</p>
+<p>We can see that the mathlib <a
+href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#Group">Group</a>
+<code>extends</code> <a
+href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#DivInvMonoid">DivInvMonoid</a>:</p>
+<pre class="lean4"><code>class Group (G : Type u) extends DivInvMonoid : Type u</code></pre>
+<p>which itself extends <a
+href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#Monoid">Monoid</a>
+with the <code>Inv</code> and <code>Div</code> functions:</p>
+<pre class="lean4"><code>class DivInvMonoid (G : Type u) extends Monoid , Inv , Div : Type u</code></pre>
+<p>and which <em>itself</em> extends <a
+href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#Semigroup">Semigroup</a>:</p>
+<pre class="lean4"><code>class Monoid (M : Type u) extends Semigroup , One : Type u</code></pre>
+<p>which (finally, we’re at bedrock) extends the generic operation <a
+href="https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Mul">Mul</a>:</p>
+<pre class="lean4"><code>class Semigroup (G : Type u) extends Mul : Type u</code></pre>
+<p><span class="sidenote"> <code>Mul</code> basically refers to what
+we’ve defined as a magma. </span></p>
+<pre class="lean4"><code>class Mul (α : Type u) : Type u
+    mul : α → α → α</code></pre>
+<p>Isn’t it satisfying to see the pieces fit together?</p>
+<p>The other details that they have provided have to do with group
+multiplication, i.e. given an element <span
+class="math display"><em>a</em></span> in a group <span
+class="math display"><em>G</em></span> with operation <span
+class="math display">⋅</span>, then “multiplying” <span
+class="math display"><em>a</em></span> by itself <span
+class="math display"><em>n</em></span> times: <span
+class="math display"><em>a</em> ⋅ <em>a</em> ⋅ <em>a</em> ⋅ ⋯ ⋅ <em>a</em></span>
+can be written as <span
+class="math display"><em>a</em><sup><em>n</em></sup></span>.</p>
+<p>Another important point is that Lean has both additive and
+multiplicative groups (<a
+href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#AddGroup">AddGroup</a>
+and <a
+href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#Group">Group</a>
+respectively). Though the same group axioms hold for both of these
+types, they differ notationally, and arise from slightly different
+structures.</p>
+<h2 id="rings">Rings</h2>
+<p>Now for the second exhibition in our menagerie of algebraic
+structures. Ring theory often forms the second or third part of an
+Abstract Algebra course, since defining a ring requires you to know what
+a group is. Their definition follows:</p>
+<p>A ring is a set <span class="math display"><em>R</em></span> equipped
+with two binary operations, addition <span class="math display">+</span>
+and multiplication <span class="math display">⋅</span>, written <span
+class="math display">(<em>R</em>,+,⋅)</span>, satisfying three sets of
+axioms:</p>
+<ol type="1">
+<li><span class="math display">(<em>R</em>,+)</span> is an abelian
+(commutative) group.
+<ol type="a">
+<li>All group axioms hold. <span class="sidenote">Recall the group
+axioms are (1) associativity of operator, (2) existence of identity, (3)
+existence of inverses.</span></li>
+<li>Ordering of arguments in the binary operation does not matter.</li>
+</ol></li>
+<li><span class="math display">(<em>R</em>,⋅)</span> is a monoid.
+<ol type="a">
+<li>Multiplication is associative.</li>
+<li>There exists an identity in the set.</li>
+</ol></li>
+<li>Multiplication is distributive with respect to addition; i.e., for
+any elements <span
+class="math display"><em>a</em>, <em>b</em>, <em>c</em></span> in <span
+class="math display"><em>R</em></span>, <span
+class="math display"><em>a</em> ⋅ (<em>b</em>+<em>c</em>) = (<em>a</em>⋅<em>b</em>) + (<em>a</em>⋅<em>c</em>)</span>.</li>
+</ol>
+<p>The classic example is the integers under addition and
+multiplication: <span class="math display">(ℤ,+,⋅)</span>. A slightly
+more complicated example is the set of all <span
+class="math display"><em>n</em> × <em>n</em></span> matrices with
+entries from <span class="math display">ℝ</span> under matrix addition
+and multiplication. The former is a commutative ring, the latter is a
+noncommutative ring, since matrix multiplication does not commute.</p>
+<p>Is <span class="math display">(ℕ,+,⋅)</span> a ring (where <span
+class="math display">ℕ</span> stands for the set of all natural
+numbers)?</p>
+<details>
+<summary>
+Click for answer.
+</summary>
+No. <span class="math display">(ℕ,+)</span> is not a group, so we fail
+the additive abelian group constraint already. It isn’t a group because
+there aren’t inverses; e.g., for a natural number, say, <span
+class="math display">2</span>, there is no element in <span
+class="math display">ℕ</span> that you can add which brings you to the
+identity, <span class="math display">0</span>.
+</details>
+<p>Try defining a ring using techniques similar to what we did for our
+first attempt at a group implementation, a sort of word-for-word
+transcription. Then, we’ll check out the mathlib implementation and try
+to unpack it.</p>
+<details>
+<summary>
+Click for my (naïve) take:
+</summary>
+<pre class="lean4"><code>structure myRing (α : Type) where
+    add : α → α → α 
+    mul : α → α → α 
+    neg : α → α
+    zero : α
+    one : α
+    add_assoc : ∀ (a b c : α), add (add a b) c = add a (add b c)
+    add_inv_eq_zero : ∀ (a : α), add a (neg a) = zero
+    add_zero : ∀ (a : α), add a zero = a
+    add_comm : ∀ (a b : α), add a b = add b a
+    mul_assoc : ∀ (a b c : α), mul (mul a b) c = mul a (mul b c)
+    mul_one : ∀ (a : α), mul a one = a
+    distrib : ∀ (a b c : α), mul a (add b c) = add (mul a b) (mul b c)</code></pre>
+</details>
+<p>I use <code>zero</code> to refer to the additive identity and
+<code>one</code> to refer to the multiplicative identity, since
+<code>mul_id</code> and <code>add_id</code> seem a little ambiguous to
+me. But in your implementation, it’s ultimately your call. You could
+call it <code>pizza</code>, and although it might cause confusion to the
+reader, it would still be a ring.</p>
+<p>We could also extend the definition of a group into that of a ring.
+We would just have to define another binary operation and its
+corresponding axioms, and the distributive property.</p>
+<p>So how does mathlib do it? Like before, I’ll include the type
+signatures of all our intermediary structures, and the entire definition
+for <code>Ring</code>.</p>
+<p>Mathlib starts from <code>AddCommMonoid</code> and
+<code>Mul</code>:</p>
+<pre class="lean4"><code>class AddCommMonoid (M : Type u) extends AddMonoid : Type u</code></pre>
+<p>This makes sense; we attempt to treat the
+abelian-group-under-addition part of the ring with
+<code>AddCommGroup</code>, arising from the more general
+<code>AddCommMonoid</code>, and introduce a very generic multiplicative
+operation with <code>Mul</code>, to get to a
+<code>NonUnitalNonAssocSemiring</code>. <span class="sidenote">In a
+ring, elements that are invertible with respect to multiplication are
+called <strong>units</strong>, so a non-unital ring is one whose
+multiplicative monoid does not have inverses.</span></p>
+<pre class="lean4"><code>class NonUnitalNonAssocSemiring (α : Type u) extends AddCommGroup , Mul : Type u</code></pre>
+<p>Then, we extend the <code>NonUnitalNonAssocSemiring</code>,
+introducing associativity to make it a
+<code>NonUnitalSemiring</code>.</p>
+<pre class="lean4"><code>class NonUnitalSemiring (α : Type u) extends NonUnitalNonAssocSemiring : Type u</code></pre>
+<p>Next, we extend the <code>NonUnitalSemiring</code> into a
+<code>Semiring</code>, introducing a multiplicative identity with
+<code>One</code>.</p>
+<pre class="lean4"><code>class Semiring (α : Type u) extends NonUnitalSemiring , One , NatCast : Type u</code></pre>
+<p>And finally, a <code>Ring</code> is a <code>Semiring</code> with
+negation, group-ifying our additive operator (okay, abuse of vocabulary,
+since an operation does not a group make, but I hope it gets the point
+across); so we extend it with <code>Neg</code> and the operator
+<code>Sub</code>:</p>
+<pre class="lean4"><code>class Ring (R : Type u) extends Semiring , Neg , Sub , IntCast : Type u</code></pre>
+<p>As expected, just like groups, rings don’t exist by themselves in a
+vaccum either. Semirings don’t require additive inverses, <em>rngs</em>
+don’t require a multiplicative identity (did you spot the hilarious joke
+that <em>i</em> stands for the multiplicative identity, so a ring
+without an <em>i</em> is just rng?), and rings also generalise a notion
+called a <strong>field</strong>.</p>
+<p>I think of fields as a “stricter” version of rings where the
+multiplicative operation must satisfy all the properties of an abelian
+group. <a
+href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Field/Defs.html#Field">You
+can take a look at how fields are defined in mathlib</a>. The definition
+is by far the longest, since it’s the most complex structure we’ve come
+across.</p>
+<p>Our previous picture of the group family tree has now expanded. At
+the top is our broadest structure, a magma. Our main intermediaries are
+groups and rings, before we arrive at the bottom, our most specialised
+structure: a field.</p>
+<p><img src="../media/hierarchy-with-rings.png" /></p>
+<h2 id="an-aside-on-algebraic-structures">An aside on algebraic
+structures</h2>
+<p>The broadest way we might classify rings, groups, fields, etc, is
+with the concept of an <strong>algebraic structure</strong>, defined
+simply as a set with a collection of operations and axioms. The next,
+higher level of classification might be a <strong>variety</strong>,
+which describe a class of algebraic structures satisfying certain
+axioms. Groups, abelian groups, monoids, rings, and more all form their
+own varieties of algebras.</p>
+<p>Perhaps we want to take an <em>even broader</em> look, by treating
+each variety and their maps as a whole. Then, we could theoretically
+define maps (aka <em>functors</em>) from the variety of rings to the
+variety of groups. This pushes us into the territory of <del>dark
+magic</del> category theory. <span class="sidenote">See ncatlab’s <a
+href="https://ncatlab.org/nlab/show/computational+trilogy">page on the
+computational trilogy</a> for a deeper dialogue on category theory, type
+theory, and programming language theory.</span> I know even less about
+category theory than I do formal verification, so I won’t proceed, both
+for your sake and mine.</p>
+<h2 id="helpful-tidbits-and-resources">Helpful tidbits and
+resources</h2>
+<h3 id="making-our-operator-less-ugly">Making our operator less
+ugly</h3>
+<p>You might have noticed when we define a binary operator, like
+<code>mul : α → α → α</code>, and we want to then <code>mul</code> two
+things <code>a</code> and <code>b</code> together, we don’t write
+<code>a mul b</code> as you might expect, but rather
+<code>mul a b</code>. This is because Lean is a functional programming
+language, so the names of functions come first, then their arguments.
+You might then ask, “why isn’t it <code>mul(a,b)</code>, so we can
+better distinguish between functions and arguments?” This is a good
+question with a sprawling answer that mostly consists of “it’s
+tradition”, but there’s plenty of historical detail embedded in such a
+representation. <span class="sidenote">See <a
+href="https://en.wikipedia.org/wiki/Lambda_calculus#Informal_description">lambda
+calculus</a> for said detail.</span></p>
+<p>Anyways, <code>mul a b</code> is ugly and not very intuitive for
+non-computer scientists. Also, it gets confusing when we have to write
+nested expressions; see our associative law.
+<code>mul (mul a b) c</code> is not the most fun thing to parse for
+human eyes. Luckily, Lean lets us customize our operators. What we want
+is something like <code>a * b</code>, where the operator is
+<em>infix</em>. But <code>*</code> is already taken; it means
+multiplication for many different numeric types. Let’s find our own.</p>
+<p>It varies among textbooks, but <a
+href="https://archive.org/details/abstractalgebra0000dumm">Dummit and
+Foote</a> use a little star <code>⋆</code> as their group operation.
+It’s cute; let’s steal it. (You can write it as <code>\star</code>.)
+Simply add the one of the below lines after your definition of your
+group.</p>
+<pre class="lean4"><code>infixl:65 `⋆` =&gt; myGroup.op
+/- or -/
+infixr:65 `⋆` =&gt; myGroup.op</code></pre>
+<p><code>infixl</code> and <code>infixr</code> do the expected thing of
+defining an operation with an infixed symbol, left-associative and
+right-associative respectively. A left-associative operator is like
+addition, <span class="math display">+</span>, while a right associative
+operator would be like exponentiation, <code>^</code>.</p>
+<p>We put a number after the colon to quantify the <em>parsing
+precedence</em> of the operator; in other, mushier words, how strongly
+it attaches itself to its arguments. <a
+href="https://lean-lang.org/lean4/doc/notation.html">More detail about
+parsing precedence can be seen here</a>.</p>
+<p>Now, we can write <code>mul a b</code> as the much more familiar
+<code>a ⋆ b</code>, and the nasty <code>mul (mul a b) c</code> has
+<code>(a ⋆ b) ⋆ c</code>.</p>
+<p>Isn’t it adorable? There’s a constellation in our Lean file… I see
+why people rave over Dummit &amp; Foote now.</p>
+<h3 id="resources">Resources</h3>
+<p>Remember way back in the beginning of this post when I said I’d link
+some helpful texts to learn Lean with? Here they are:</p>
+<ul>
+<li><a href="">Theorem Proving in Lean 4</a> is purportedly the Lean
+Bible.</li>
+<li><a href="">Functional Programming in Lean</a> and <a
+href="">Mathematics in Lean</a> each tackle the two branches of Lean,
+computer science and math respectively.</li>
+<li><a href="">The Hitchhiker’s Guide to Logical Verification</a> is a
+textbook from a <a
+href="https://lean-forward.github.io/hitchhikers-guide/2023/">course</a>
+on interactive theorem proving.</li>
+<li><a href="">Formalizing Mathematics</a> is a course taught by
+Professor Kevin Buzzard.</li>
+<li><a href="">The Natural Number Game</a>, also by Professor Buzzard,
+offers a gentler, gamified introduction to Lean. <strong>Start here if
+you’re new to Lean.</strong></li>
+<li><a href="">How To Prove It</a> is a popular undergraduate intro to
+proofs textbook which has recently undergone a Lean-ification by its
+author, Professor Velleman.</li>
+<li><a href="">Loogle</a> is a search engine just for Lean, analogous to
+Haskell’s Hoogle.</li>
+<li><a href="">Lean 4 Documentation</a>, the nuts and bolts. Tightly
+integrated with the source code.</li>
+</ul>
+<p>Lean got its start in Microsoft Research, so it’s no surprise that
+Visual Studio Code is the main tool of choice for writing Lean. It is
+very well-supported. However, there are other options for those of us
+who like to spend copious amounts of time on tweaking and tinkering with
+our text editors:</p>
+<ul>
+<li><a href="">lean.nvim</a> is a plug-in for Neovim users.</li>
+<li><a href="">lean4-mode</a> is a mode for Emacs users.</li>
+</ul>
+<p>I use lean4-mode and it works pretty flawlessly, though it is more
+barebones than what the Neovim plug-in offers out of the box (and the
+Neovim plug-in seems faster, too!).</p>
+<h2 id="up-next-and-outlinks">Up next and outlinks</h2>
+<p>I’d like to make a few more posts on abstract algebra and Lean.
+There’ll likely be more walkthroughs concerned with defining
+sub-structures (namely subgroups and subrings), and proving basic
+theorems, like the uniqueness of inverses and the identity, which
+hopefully will explore other capabilities of Lean as a programming
+language.</p>
+<p>When I do make those posts, I’ll put them here!</p>
+<p>If there are any errors in any of the math or the programming above,
+please let me know. In fact, if you have any constructive criticism at
+all (I know this article was overlong, and maybe included unecessary
+things), my contact information is in my About page.</p>
+</main>
+<footer>
+</footer>
+</body></html>

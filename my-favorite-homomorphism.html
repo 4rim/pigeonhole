@@ -1,0 +1,169 @@
+<!DOCTYPE html><html lang='en'>
+<head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><link rel='stylesheet' type='text/css' href='./css/posts.css'>
+
+<link rel="stylesheet" href="./site/katex.min.css">
+<script src="./site/katex.min.js"></script> <!--
+
+<script>
+    document.querySelectorAll('span.math').forEach(function(spanElement) {
+        let txt = spanElement.textContent;
+
+        // if (spanElement.parentElement && spanElement.parentElement.tagName == 'DIV') {
+        //     txt = '\\displaystyle ' + txt;
+        // }
+
+        try {
+            katex.render(txt, spanElement, {
+                throwOnError: false
+            });
+        } catch (e) {
+            console.e('KaTeX rendering error: ', e);
+        }
+    });
+</script> -->
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.17/dist/katex.min.css" integrity="sha384-E3Ch6GfEmQxX4+zL1TNBHZTahPudFnkb3bn736MpiTymT+kdWvkqbcXC9w+7NUFC" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.17/dist/katex.min.js" integrity="sha384-igoYAuiJMUBJiuLpEFYNX9OyoHaasGfyvrvIUkmt4j2TRh25e9u8QTsj8QWZxCx7" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.17/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          // customised options
+          // • auto-render specific keys, e.g.:
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          // • rendering keys, e.g.:
+          throwOnError : false
+        });
+    });
+</script>
+
+</head>
+<body>
+<header>
+<nav>
+          <b><a href="../site/index.html">home</a></b><br />
+          <b><a href="../site/about.html">about</a></b><br />
+          <b><a href="../site/journal.html">journal</a></b><br />
+          <b><a href="../site/nest.html">nest</a></b><br />
+          </nav></header>
+<main>
+<h1>my favorite homomorphism</h1>
+
+
+<p>An upperclassman I know gave once gave me and a group of other students brilliant lecture on the deep relationship between congruence classes, partitions, and fibres. I first came across this concept in Artin's <em>Algebra</em>; I was elated when it finally clicked with me. (Every time I consider <em>giving up [on math]</em> I think about these concentric circles on the plane &amp; it genuinely brings me some peace of mind. It's an image I could put in my wallet as a reservoir of spiritual strength, like an illustration of a saint... is it a coincidence that these circles resemble haloes, or the natural aureolae of onions, trees, &amp; ripples on a pond?)</p>
+
+<h2>A gentle introduction to homomorphisms</h2>
+
+<h3>Groups</h3>
+
+<p>We assume that the reader already knows what a group (in the algebraic sense) is. But just in case, this is <a href="https://en.wikipedia.org/wiki/Group_(mathematics)#Definition_and_illustration">a link to the definition given by Wikipedia</a>, and one to <a href="https://iwillneverbehappy.neocities.org/site/types-in-lean#groups">a definition I gave in an earlier post</a>.</p> 
+
+<!-- <p>Before we get to homomorphisms, we want to define the objects with which they interact: <em>groups</em>.</p> 
+
+<p>A group is a non-empty set \( G \) together with an associative law of composition (also called a binary operation) that we will denote as a <q>center-dot</q>, \( \cdot : G \times G \rightarrow G \). Together, the set of the group's elements can be written with alongside its operator like this: \( (G, \cdot) \) but using <q>abuse of notation</q> many mathematicians simply refer to the group as the set of its elements, \( G \). Instead of writing out the operator explicitly every time, like \( ((a \cdot b) \cdot c) \cdot d \), we will omit the operator and write \( abcd \) for the sake of brevity, but take care: this does not necessarily mean multiplication of numbers.</p> 
+
+<p>There are three essential rules which define a group:</p> 
+<ol>
+    <li>For all \( a,b,c  \) in \( G \), \( (ab)c = a(bc) \). (Associativity)</li>
+    <li>There exists an element \( e \) in \( G \), such that \( ge = eg = g \). (Existence of an identity)</li>
+    <li>For all \( g \) in \( G \), there exists a \( g^{-1} \), also in \( G \), such that \( gg^{-1} = g^{-1}g = e \). (Existence of inverses)</li>
+</ol>
+
+<p>Examples of groups are the group of integers with addition, \( (\mathbb Z, +) \). We can quickly prove this. Clearly, condition (1) holds since for any integers \( x,y,z \in \mathbb Z \), \( (x + y) + z = x + (y + z) \); it follows directly from the associativity of addition. For condition (2), we show that \( 0 \) is the identity element of this group, since for any integer \( x \in \mathbb Z \), \( x + 0 = 0 + x = x \). Finally, for condition (3), we know that given an element \( x \in \mathbb Z \), there exists a \( -x \) such that \( x + (-x) = 0 \). And since addition over the integers is commutative, we are done.</p>
+<p><details><summary>Try and prove that \( (\mathbb Q^\times, \cdot) \), i.e., the set of all rational numbers (<em>without \( 0 \)</em>) under multiplication is indeed a group. Recall that any rational number is one that can be expressed as a quotient of two integers, \( \frac{p}{q} \), where \( q \) is non-zero. </summary>Condition (1), similarly as in the example, is fulfilled immediately by the associativity of multiplication. Condition (2) can be shown by using the element \( 1 \), which is clearly in \( \mathbb Q^\times \). For condition (3), we note that any arbitrary non-zero element of the rationals can be written \( \frac{p}{q} \) where both \( p \) and \( q \) are non-zero. Take its reciprocal, \( \frac{q}{p} \), and note that \( \frac{p}{q} \cdot \frac{q}{p} = 1 \). And again, since multiplication of rationals is commutative, we are done.</details></p>
+<p><details><summary>Why did we have to omit \( 0 \) from the rational numbers in the example above? What happens if we include \( 0 \)?</summary>We fail condition (3) (existence of inverses), since no rational number can be multiplied by \( 0 \) to get \( 1 \); in other words, \( 0 \) has no multiplicative inverse.</details></p>
+<p>To show the uniqueness of identities and inverses is an exercise left to the reader. Hint: a proof of uniqueness often begins with presupposing that the element in question is <em>not</em> unique; i.e., say you have \( h \) <em>and</em> \( h' \) with a certain property. Then you must show that \( h = h' \), i.e., there was only ever one element with this trait all along.</p>-->
+
+<h3>Homomorphisms</h3>
+
+<p>Groups by themselves are interesting enough to study, but we are missing a way to relate different groups to each other.</p>
+
+<p>I had a professor who said that the point of a lot of higher-level mathematics is <q>all about turning things to zero</q>, which is another way of saying <q>all about finding equalities between objects</q>. Why? Because if you set a particular thing to zero, then any objects which differ by that thing are now equal (i.e., their difference is literally zero).</p>
+
+<p>So, we would like not only to find mappings between different groups, but also a way to their describe equality (or lack thereof) of groups themselves. We can do both of these things with homomorphisms.</p> 
+
+<p>Given two groups \( (G, \circ ) \) and \( (H, \star) \), a homomorphism is a map \( \varphi : G \rightarrow H \) such that the following property holds: for all \( g, h \in G \), we have that
+\[
+\varphi(g \circ h) = \varphi(g) \star \varphi(h).
+\]</p> 
+<p>In other words, you combine two elements of \( G \) together with it's particular law of composition, \( \circ \), you get \( g \circ h \). <em>Then</em> you send it through the map \( \varphi \) to get an element in \( H \), which is \( \varphi(g \circ h) \). If \( \varphi \) is a homomorphism, then it must be the case that first mapping \( g \) and \( h \) to \( \varphi(g) \) and \( \varphi(h) \) and <em>then</em> combining the elements in \( H \) with <em>it's</em> particular law of composition, \( \star \), gets you to the same place.</p>
+<p>We often say that a group homomorphism <em>respects the group structure</em>, or that it respects the group operations.</p> 
+<p>The definition of homomorphism might sound extremely barebones, but it is possible to prove two important facts:</p>
+<ol>
+    <li>Say \( e_G \) is the identity element in \( G \) and \( e_H \) the one in \( H \). Then, \( \varphi(e_G) = e_H \).</li>
+    <li>If \( g^{-1} \in G \), then \( \varphi(g^{-1}) = \varphi(g)^{-1} \).</li>
+</ol>
+<p>More prosaically, homomorphisms take <em>inverses to inverses</em> and <em>identities to identities</em>. The proof of this is left to the reader.</p> 
+
+<h3>Isomorphisms</h3>
+<p>Isomorphisms are <em>bijective</em> homomorphisms. A bijective map in general is one that is <em>injective</em>, i.e., one-to-one and <em>surjective</em>, i.e., onto.</p>
+<p>Injectivity concerns itself with <b>uniqueness</b>: if we have two sets \( A \) and \( B \) and a map \( f : A \rightarrow B \), for \( f \) to be injective, it must be that
+\[
+\forall a,a' \in A,\quad f(a) = f(a') \implies a = a',
+\]
+that is, if two objects in \( A \) are mapped to the same object in \( B \), then those two objects must be equal to each other. Anything in \( B \) is <q>hit</q> <em>at most once</em> by an element in \( A \).
+</p> 
+<p>Surjectivity concerns itself with <b>existence</b>: For a map \( f : A \rightarrow B \) to be surjective, it must be the case that for all \( b \in B \), there exists an \( a \in A \) such that \( f(a) = b \). That is, everything in \( B \) is <q>hit</q> <em>at least once</em> by something in A; or, nothing in \( B \) goes untouched.
+</p>
+<p>If groups \( G \) and \( H \) are isomorphic, we also write \( G \simeq H \).</p> 
+<ol>
+    <li>From this definition of bijectivity, we immediately know that if there is an isomorphism between two groups \( \psi : G \rightarrow H \), there is also the inverse isomorphism which goes the other direction: \( \psi^{-1} : H \rightarrow G \).</li>
+    <li>We can also show that a group must be isomorphic to itself.</li>
+    <li>Finally, we can show that if we have three groups, \( G, H, I \), and we know that \( G \simeq H \), and \( H \simeq I \), then \( G \simeq I \).</li> 
+</ol>
+<p>These three properties we have listed above all have names, respectively: commutativity, reflexitivity, &amp; transitivity, making group isomorphisms an <em>equivalence relation</em>. (The familar notion of equality among numbers is also an equivalence relation.) And so there we have it; a way to tell if two groups are equal.</p>
+
+<p>Here, we introduce another way to quickly deduce that a homomorphism \( \varphi : G \rightarrow H \) is in fact an isomorphism.</p> 
+<p>For surjectivity, we must show that the <em>image</em> of \( \varphi \) is the entire set \( H \), i.e.,
+\[
+\text{Im } \varphi = H.
+\]
+This is equivalent to saying that every element in \( H \) is hit at least once by \( \varphi \).
+</p> 
+<p>For injectivity, we must show that the <em>kernel</em> of \( \varphi \) is trivial, i.e.,
+\[
+\ker \varphi = \left\{ e \right\}.
+\]
+The <em>kernel</em> of a set \( A \) under a map \( f \) is a subset of \( A \) which contains all the elements that are mapped to <q>zero</q> by \( f \). We can write this in set-builder notation:
+\[
+\ker A = \left\{ a \in A : f(a) = 0 \right\},
+\]
+in our case the <q>zero</q> is the identity element, and an isomorphism maps <em>only</em> the identity of \( G \) to the identity of \( H \). This is the smallest the kernel can be, and we can see this from the definition of homomorphism (<q>takes identities to identities</q>). This minimal kernel is also called the trivial kernel.
+</p>
+<p>This is where the notion of <q>turning things to zero</q> comes into play. Changing how big the kernel can be results in consequences to our notion of equality, because any element in \( H \) which <q>differs</q> by an element of the kernel must be equal to one another.</p>
+<p>So we have the notion that a homomorphism is injective if and only if its kernel is trivial. In some sense an injection means that all information regarding differences between elements is preserved when we go from one set into the other. Nothing <q>collapses</q> together.</p> 
+<p>Now, take the opposite extreme of our example with \( f : A \rightarrow B \): what if \( \ker f \) was the <em>entirety</em> of \( A \)? This would mean that <em>everything</em> in \( A \) gets mapped to \( 0 \), so everything ends up equalling the same thing in \( B \), namely, \( 0 \).</p>
+
+<p>I really like this way of defining injectivity solely by looking at <q>zero</q>. It definitely has an algebraic flavor to it that is missing from the formal definition with its \( a \) and \( a' \).</p> 
+
+<!-- <h2>The first isomorphism theorem</h2>
+
+<p>Let's put it up front.</p> 
+
+<p><em>Theorem.</em> Let \( G \) and \( H \) be groups, and let \( \varphi : G \rightarrow H \) be a homomorphism. Then,</p> 
+<ol>
+    <li>\( \ker \varphi \) is a normal subgroup of \( G \)</li>
+    <li>\( \text{Im } \varphi \) is a subgroup of \( H \)</li>
+    <li>\( \text{Im } \varphi \simeq G/\ker \varphi \).</li>
+</ol> -->
+
+<h2>My favorite homomorphism and its fibres</h2>
+
+<p>A fibre is our best attempt at an inverse mapping. Not all maps have an inverse map, particularly it's impossible to construct an inverse of this map:</p>
+
+<p>because while we can easily go in one direction, it's not entirely clear on how to proceed in the other.</p>
+
+<p>It's true that for injective maps, it is possible to define what is called a <em>psuedoinverse</em> (unfortunately, that term is used in a variety of different contexts, so be careful) by restricting the domain of our fake inverse to the image of the original mapping. But for non-injective maps, we're stumped from the start.</p>
+
+<p>However, it still might be valuable to talk about a relationship that goes in that other direction. Fibres are a generalization which allows us to to talk about a notion similar to inverse maps without the requirement that the map be bijective. You might recognize that a the kernel of a homomorphism is a specific type of fibre. <aside>(NB: If you've heard of a pre-image or a level set, it's good to know that fibres, level sets and pre-images are different names for more-or-less the same idea. Fibres are a special instance of pre-image and level sets are a special instance of fibres.)</aside></p>
+
+</main>
+<footer>
+</footer>
+</body></html>
+

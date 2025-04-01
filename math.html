@@ -1,0 +1,528 @@
+<p>Results from math I find interesting and pleasing, presented in a very informal way with some drawings, in-line with my weird preferences. Also, tangential writing about math at the bottom.</p>
+
+<details>
+<summary>
+    TODO:
+</summary>
+    <ul>
+        <li>Animation of First Isomorphism Theorem and example of homomorphism fibres</li>
+        <li>Real numbers and infinite coin tosses</li>
+        <li>Cantor's intersection theorem (set theory, cool visuals)</li>
+        <li>Vitali's Theorem (measure theory, unexpected result)</li>
+        <li>Some results from linear algebra; overlaps with abstract algebra, number theory (i.e., proof of infinitude of primes with linear algebra)</li>
+        <li>Simplicial homology; chain complexes (applied topology, cool visuals)</li>
+        <li>Weird metrics, i.e. Hausdorff and Wasserstein/earth-mover's (applied topology, visuals)</li>
+        <li>Free groups &amp; Cayley diagrams (group theory, cool visuals)</li>
+        <li>Intro to type theory</li>
+        <ul>
+            <li>Intuitionistic type theory</li>
+        </ul>
+        <li>Intro to model theory</li>
+    </ul>
+</details>
+
+<hr />
+
+<h2>Technical writing</h2>
+
+<h3>First Isomorphism Theorem</h3>
+
+<p>
+A group is a set with an operating which follows certain rules. There are certain mappings between groups that preserve the operation; these mappings are called (group) <strong>homomorphisms</strong>.
+</p>
+<p>
+There is a special type of homomorphism called an <strong>isomorphism</strong>. An isomorphism between two groups basically allows you to claim that the two groups are <q>the same</q>. You can think of it as an equal sign just for groups. (In fact, like the notion of numeric equality on numbers, isomorphisms form an equivalence relation on groups.) When we have two groups 
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>G</mi>
+    <mo>,</mo>
+    <mi>H</mi>
+  </mrow>
+</math>
+
+which are isomorphic to each other, we write 
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>G</mi>
+    <mo>≃</mo>
+    <mi>H</mi>
+  </mrow>
+</math>
+.
+</p>
+
+<p>
+One of the most important and basic theorems of abstract algebra is the <strong>First Isomorphism Theorem</strong> (there are three, laid out by mathematician Emmy Noether in the 1920s). The First Isomorphism Theorem states that, given two groups 
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>G</mi>
+    <mo>,</mo>
+    <mi>H</mi>
+  </mrow>
+</math>
+
+and a homomorphism
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>ϕ</mi>
+    <mo>:</mo>
+    <mi>G</mi>
+    <mo>→</mo>
+    <mi>H</mi>
+  </mrow>
+</math>
+
+the image of
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>ϕ</mi>
+  </mrow>
+</math>
+
+is isomorphic to the quotient group
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>G</mi>
+    <mi>/</mi>
+    <mo>ker</mo>
+    <mi>ϕ</mi>
+  </mrow>
+</math>
+.
+</p>
+
+<details>
+    <summary>
+        Q: Wait, what's a quotient group?
+    </summary>
+    I won't define <a href="https://en.wikipedia.org/wiki/Quotient_group">quotient group</a> formally but the idea of a quotient is very fundamental to any kind of algebraic structure. I once had a math professor say that <q>a lot of higher-level math is just about turning things to zero</q>, and this is basically what taking the quotient of things is; asking what if this was zero? How would this affect the idea of equivalence between two elements? This is a reasonable thing to ask because if we let non-zero things act like they were zero, suddenly two things that differ by this non-zero thing are now equal!
+</details>
+
+<p>
+Think of
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>ker</mi>
+    <mi>ϕ</mi>
+  </mrow>
+</math>
+
+as <q>all the stuff that is collapsed by
+
+    <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+    <mi>ϕ</mi>
+    </math>
+
+    to zero</q>. In other words,
+
+    <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+    <mi>ϕ</mi>
+    </math>
+
+sort of <q>destroys</q> some part of
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi>G</mi>
+</math>
+
+; since it's a homomorphism and not an isomorphism, it can potentially destroy some information about
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi>G</mi>
+</math>
+
+when everything in it is mapped to 
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi>H</mi>
+</math>
+
+.
+</p>
+<p>
+Meanwhile, the image of
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+<mi>ϕ</mi>
+</math>
+
+is what you get when you apply
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+<mi>ϕ</mi>
+</math>
+
+to everything in
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+<mi>G</mi>
+</math>
+.
+</p>
+<p>
+So, the First Isomorphism Theorem says that the group
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+<mi>H</mi>
+</math>
+
+you get when you apply
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+<mi>ϕ</mi>
+</math>
+
+to everything in
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+<mi>G</mi>
+</math>
+
+is in some sense equal to the original group
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+<mi>G</mi>
+</math>
+
+hat you started with, but only if you <q>mod out</q> what gets collapsed by
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+<mi>ϕ</mi>
+</math>
+
+(hence
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>G</mi>
+    <mi>/</mi>
+    <mo>ker</mo>
+    <mi>ϕ</mi>
+  </mrow>
+</math>
+
+and not just
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+<mi>G</mi>
+</math>
+
+). This makes intuitive sense because \phi <q>leaves behind</q> some information about G, so H doesn't necessarily <q>equal</q> G anymore. Modding out by \ker \ph is precisely what handles this possible discrepancy between G and H.
+</p>
+
+<figure>
+    <figcaption>Case of isomorphism</figcaption>
+</figure>
+
+<figure>
+    <figcaption>Case of homomorphism (with <q>discrepancy</q>)</figcaption>
+</figure>
+
+<p>
+In a sense the size of
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>ker</mi>
+    <mi>ϕ</mi>
+  </mrow>
+</math>
+
+is a measure of how much
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+<mi>ϕ</mi>
+</math>
+
+preserves of the original group. Then it makes sense that for any isomorphism
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>f</mi>
+    <mo>:</mo>
+    <mi>G</mi>
+    <mo>→</mo>
+    <mi>H</mi>
+    <mo>,</mo>
+    <mspace width="1.0em" />
+    <mo>ker</mo>
+    <mi>f</mi>
+    <mo>=</mo>
+    <mi>0</mi>
+  </mrow>
+</math>
+
+. We also say that
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>ker</mo>
+    <mi>f</mi>
+  </mrow>
+</math>
+
+is <strong>trivial</strong>. I'm being very vague with notation here, but this means that
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>ker</mo>
+    <mi>f</mi>
+  </mrow>
+</math>
+
+is the smallest it can possibly be, therefore
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>f</mi>
+  </mrow>
+</math>
+
+preserves as much as
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>G</mi>
+  </mrow>
+</math>
+
+as possible when mapping to
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>H</mi>
+  </mrow>
+</math>
+
+, therefore
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>G</mi>
+  </mrow>
+</math>
+
+ is <q>equal</q> to
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>H</mi>
+  </mrow>
+</math>
+
+, i.e., nothing is lost/collapsed when we apply
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>f</mi>
+  </mrow>
+</math>
+
+ to
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>G</mi>
+  </mrow>
+</math>
+
+.
+</p>
+
+<hr />
+
+<h3>My favorite homomorphism and its fibres</h3>
+
+<p>An upperclassman I know gave once gave me and a group of other students brilliant lecture on the deep relationship between congruence classes, partitions, and fibres. When I first came across this concept in Artin's <em>Algebra</em> I remember being elated. (Every time I consider <em>giving up</em> I think about these concentric circles on the plane. It's an image I could put in my wallet as a reservoir of spiritual strength, like an illustration of a saint... is it a coincidence that these circles resemble haloes...?)</p>
+
+<p>A fibre is our best attempt at an inverse mapping. Not all maps have an inverse map, particularly it's impossible to construct an inverse of this map:</p>
+
+<p>because while we can easily go in one direction, it's not entirely clear on how to proceed in the other.</p>
+
+<p>However, it still might be valuable to talk about a relationship that goes in that other direction. Fibres are a generalization which allows us to to talk about pre-images without the requirement that the map be one-to-one and onto. You might recognize that a the kernel of a homomorphism is a type of fibre. <aside>(NB: fibres and pre-images are the same thing.)</aside></p>
+
+<p>More formally, given two sets A,B and a mapping \psi : A \rightarrow B, the fibre is a subset of A. Specifically, given any element
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>b</mi>
+    <mo>∈</mo>
+    <mtext mathvariant="normal">Im</mtext>
+    <mi>ψ</mi>
+  </mrow>
+</math>
+
+(here note that
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mtext mathvariant="normal">Im</mtext>
+    <mi>ψ</mi>
+    <mo>⊂</mo>
+    <mi>B</mi>
+  </mrow>
+</math>
+
+), the fibre of
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi>b</mi>
+</math>
+
+is written
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi>ψ</mi>
+      <mrow>
+        <mo>−</mo>
+        <mn>1</mn>
+      </mrow>
+    </msup>
+    <mrow>
+      <mo stretchy="true" form="prefix">(</mo>
+      <mi>b</mi>
+      <mo stretchy="true" form="postfix">)</mo>
+    </mrow>
+  </mrow>
+</math>
+
+(but <em>should not</em> be conflated with the inverse) where
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi>ψ</mi>
+      <mrow>
+        <mo>−</mo>
+        <mn>1</mn>
+      </mrow>
+    </msup>
+    <mrow>
+      <mo stretchy="true" form="prefix">(</mo>
+      <mi>b</mi>
+      <mo stretchy="true" form="postfix">)</mo>
+    </mrow>
+    <mo>⊂</mo>
+    <mi>A</mi>
+  </mrow>
+</math>
+
+ defined like so:
+
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi>ψ</mi>
+      <mrow>
+        <mo>−</mo>
+        <mn>1</mn>
+      </mrow>
+    </msup>
+    <mrow>
+      <mo stretchy="true" form="prefix">(</mo>
+      <mi>b</mi>
+      <mo stretchy="true" form="postfix">)</mo>
+    </mrow>
+    <mo>=</mo>
+    <mrow>
+      <mo stretchy="true" form="prefix">{</mo>
+      <mi>a</mi>
+      <mo>∈</mo>
+      <mi>A</mi>
+      <mo>∣</mo>
+      <mi>ψ</mi>
+      <mrow>
+        <mo stretchy="true" form="prefix">(</mo>
+        <mi>a</mi>
+        <mo stretchy="true" form="postfix">)</mo>
+      </mrow>
+      <mo>=</mo>
+      <mi>b</mi>
+      <mo stretchy="true" form="postfix">}</mo>
+    </mrow>
+  </mrow>
+</math>
+
+. In words, it's all the elements in A which map to the specific b in B.<p>
+
+<p>All group homomorphisms induce a partitioning on the original group, via fibres. A partition is a way to split a set into chunks such that (1) no element is left out and (2) there are no overlaps between the chunks. Given our definition of fibres, can you see why they must form a partition? (It might seem trivial to some of you, but I found it quite fun to thoroughly convince myself of this.)</p>
+
+<details>
+    <summary>
+        A:
+    </summary>
+    Let's focus on condition (2) and proceed by contradiction. Suppose we had two fibres of some homomorphism g : G \rightarrow H. Then suppose a, b \in H and a \ne b, and consider the fibres g^{-1}(a) and g^{-1}(b). Each of these are subsets of G. Suppose by contradiction that an element g \in G is in <em>both</em> g^{-1}(a) and g^{-1}(b) (i.e., g is in their intersection g^{-1}(a) \cap g^{-1}(b)). By definition that means \phi(g) = a <em>and</em> \phi(g) = b. But this is impossible; an element of G can map to at most one in H. Thus the intersection g^{-1}(a) \cap g^{-1}(b) is empty. In other words, no fibres overlap.
+</details>
+
+<p></p>
+
+<p>Congruence classes are a special, group-specific instance of the more general equivalence classes for sets. It can easily be shown that equivalence classes (and therefore congruence classes) of a set/group form a partition. We won't need congruence classes for what I'm saying next so I'll just throw their name out there and move on.</p>
+
+<p>All of this was a setup so that I could talk about my favorite example of fibres of a homomorphism. (This also ties into the First Isomorphism Theorem and I find it quite beautiful.)</p>
+
+<p>There is a homomorphism from the complex plane \mathbb C to the non-negative real line \mathbb R^{\ge 0}. You might be able to guess what it is; it's the modulus/norm of the complex number a + bi, which is \sqrt{a^2 + b^2}. Can you see why it isn't an isomorphism? (Hint: the complex plane is two-dimensional whereas the real line is one-dimensional (we're going from a plane to a line, so surely the map must be lossy).</p>
+
+<p>What does the kernel of this homomorphism look like? (What points of the complex plane get mapped to zero on the non-negative real line?)</p>
+
+<details>
+    <summary>A:</summary>
+    <p>These are the points of form (a, b) on the complex plane such that \sqrt{a^2 + b^2} = 0, which is only possible if a = 0 and b = 0. So, only the point (0,0), i.e., the origin, is in the kernel. You can also reason through this by noting that the origin itself is the only point in the plane with distance from the origin being zero.</p>
+</details>
+
+<p>What do the fibres of this homomorphism look like?</p>
+
+<p>
+<details>
+    <summary>A:</summary>
+    <p>
+    Let's start small. Consider the fibre g^{-1}(1). These are all the points in the complex plane that get mapped to 1 on the real line. By definition these are all the points of form (a,b) such that \sqrt{a^2 + b^2} = 1. You might recognize this as the equation of a circle with radius 1, and in fact this is precisely what g^{-1}(1) looks like.
+    </p>
+    <p>
+    Generalize to g^{-1}(\alpha) where \alpha can be any real number. So the fibres are circles around the origin of radius \alpha. It would be impossible to draw <em>all</em> the fibres of g because they're an uncountable number of circles in the complex plane, but here's a drawing of a few fibres to get the gist:
+    </p>
+</details>
+</p>
+
+<p>And one doesn't even need the First Isomorphism Theorem to see that these circles <em>feel</em> very similar to the non-negative real line, despite being in the complex plane. The theorem allows us to formally state that this indeed is the case. To see this more clearly, note that the circles only differ by their radius. The length of the radius can be expressed by any single non-negative real number. Every circle is then just a point on the non-negative real line; this is where the isomorphism lies.</p>
+
+<h2>Non-technical writing</h2>
+
+<p>An upperclassman once told me about how he was reading Dante's <em>Inferno</em> for a class. He saw something about a rotating staircase, the mental image of which struck him like a lightning bolt. It was only through this visualisation that he managed to find the solution for a particularly difficult exercise on a linear algebra problem set.</p>
+
+<p>A professor once said in his typical blasé way: <q>statistics is just geometry</q>. And he's probably right, that the heart of statistics is about distances and summaries of distances. He also referred to data analysis methods as <q>doing violence</q> to the data, referring to the loss of fidelity inevitable when doing summary statistics, but I always imagined a crazed statistician threatening a bunch of quailing numbers with an icepick, or something. He's the same guy that said <q>it's all about turning things to zero</q>, so he has a penchant for these sweeping, punchy claims.</p>
+
+<p>At least back during the <q>math wars</q>, people pretended to care about the state of math education in the US. Now it's all falling apart before our eyes and education itself seems to be a passé topic when it's not shoehorned into skirmishes of the culture war. Now when a politician talks about education it's invariably followed with mentions of budget cuts or book bannings.</p>
+
+<p>It's very frustrating to see math curriculum reformation which is apparently meant to benefit low-income students, but actually ends up sabotaging them. Read more about this <a href="https://web.archive.org/web/20231011012007/https://www.theatlantic.com/ideas/archive/2023/10/california-math-framework-algebra/675509/">here</a>, if you ever want to find grievance with another thing about the world (you might have to turn Javascript off).</p>
+
+<p>Sonya and I were discussing how being a good artist is very useful in math. A strong spatial awareness comes in handy just about anywhere, from taking line integrals to looking at 2D nets of 3D solids, to knot theory, even in abstract algebra I associate a lot of concepts very strongly with certain visualizations, which I attempt to demonstrate in animations. For example, taking a quotient space in linear algebra feels to me a lot like origami and though this is very silly it reminds me of millefeulle or pastry layers. Taking the quotient of a topological space is a lot like pinching the space. A PhD student in algebraic topology recently remarked that the class would be easier if she were able to imagine these strange homotopies in greater clarity. And of course there's the meme about STEM students being <q>shape rotators</q>.</p>
+
+<p>Also, we decided to make a joint-effort post on interesting mathematical words in our respective mother-languages. Sonya has a list of Russian words here. My list in Korean is as follows:</p>
+
+<p><q>Math</q> in Korean is 수학 (数学; <em>su-hak</em>, compare with Japanese <em>suugaku</em>) which comes from the Chinese characters for <q>number</q> and <q>knowledge/teaching</q>. You will see this syllable, 수 (数), come up a lot. A lot of academic words in Korean are taken straight from Chinese and so have many analogs in both Chinese and Japanese, which is why I include the characters.</p>
+
+<p>The astute among you may ask: what's the reasoning behind your romanizations of Korean? It doesn't look like Yale or McCune–Reischauer... yeah, that's right. I hate those two with a passion. I propose my own completely nonstandardized and unorthodox method. Good luck trying to read it.</p>
+
+<ul>
+    <li><strong>유리수 (有理数; <em>yu-ri-su</em>): rational numbers</strong> - Since Korean has a limited phonology, there are many homophones and amusing coincidences which arise from said homophones. The characters for rational numbers are <q>exist</q>, <q>logic/reason</q>, and <q>number</q>, which makes sense! Being rational means being reasonable... but the word for glass is also 유리 (<em>yu-ri</em>), so when I think of rational numbers I always envision greenish old-fashioned Coke bottles...</li>
+    <ul>
+        <li>Accordingly, irrational numbers are numbers without logic: <strong>무리수 (無理数; <em>mu-ri-su</em>)</strong>, and integers are literally numbers that are nicely arranged/ordered, <strong>정수 (整数; <em>jung-su</em>)</strong>. Funnily enough, imaginary numbers are literally lying numbers: <strong>허수 (虛数; <em>heo-su</em>)</strong></li>.
+    </ul>
+    <li><strong>음수 (陰数; <em>eum-su</em>) and 양수 (陽数; <em>yang-su</em>): negative and positive numbers</strong> - Are literally yin-numbers and yang-numbers.</li>
+    <li><strong>핵 (核; <em>haek</em>): kernel</strong> - The character here means all sorts of things, from the pit/seed of a fruit (great mental image; the kernel of a homomorphism being a peach pit), to nucleus (of a cell or atom), to nuclear weapons (!). Very evocative character, and one that I usually see/hear in the context of nuclear power.</li>
+    <li><strong>동형 사상 (同形 写像; <em>dong-hyeong-sa-sang</em>): isomorphism</strong> - From the characters for <q>same</q>, <q>shape</q>, <q>copy/describe/photograph</q>, and <q>image</q>.</li>
+    <li><strong>정리  (定理; <em>jung-ri</em>): theorem</strong> - See the second character, which means <q>logic</q>. Homophonic with the word for <q>cleaning up</q>, which is a nice coincidence. Very much evokes tying up loose ends.</li>
+    <li><strong>보조정리 (補助定理; <em>bo-jo-jung-ri</em>): lemma</strong> - 보조 (補助; <em>bo-jo</em>) literally meaning <q>assistant</q>. A lemma is an assistant theorem.</li>
+    <li><strong>함수 (箱数; <em>ham-su</em>): function</strong> - Is just a box of numbers. 함 (箱; <em>ham</em>) brings to mind a treasure chest or a safebox. Coincidentally this isn't so far off from how functions are usually taught to kids: boxes that take inputs and produce certain outputs.</li>
+</ul>
+
+<aside>If you are also a fan of math and know a language other than English, feel free to pitch in with your own list; I'll gladly link to it.</aside>

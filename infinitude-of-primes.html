@@ -1,0 +1,546 @@
+<!DOCTYPE html><html lang='en'>
+<head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><link rel='stylesheet' type='text/css' href='../css/posts.css'>
+
+<link rel="stylesheet" href="../katex.min.css">
+<script src="../katex.min.js"></script> <!--
+
+<script>
+    document.querySelectorAll('span.math').forEach(function(spanElement) {
+        let txt = spanElement.textContent;
+
+        // if (spanElement.parentElement && spanElement.parentElement.tagName == 'DIV') {
+        //     txt = '\\displaystyle ' + txt;
+        // }
+
+        try {
+            katex.render(txt, spanElement, {
+                throwOnError: false
+            });
+        } catch (e) {
+            console.e('KaTeX rendering error: ', e);
+        }
+    });
+</script> -->
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.17/dist/katex.min.css" integrity="sha384-E3Ch6GfEmQxX4+zL1TNBHZTahPudFnkb3bn736MpiTymT+kdWvkqbcXC9w+7NUFC" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.17/dist/katex.min.js" integrity="sha384-igoYAuiJMUBJiuLpEFYNX9OyoHaasGfyvrvIUkmt4j2TRh25e9u8QTsj8QWZxCx7" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.17/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          // customised options
+          // • auto-render specific keys, e.g.:
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          // • rendering keys, e.g.:
+          throwOnError : false
+        });
+    });
+</script>
+
+</head>
+<body>
+<header>
+<nav>
+          <b><a href="../site/index.html">home</a></b><br />
+          <b><a href="../site/about.html">about</a></b><br />
+          <b><a href="../site/journal.html">journal</a></b><br />
+          <b><a href="../site/nest.html">nest</a></b><br />
+          </nav></header>
+<main>
+<h1>infinitude-of-primes</h1>
+
+<p>
+In lieu of a proper farewell to 2024 on this website, this is a showcase of the various ways one can show that there are an infinite number of primes; a simple statement with plenty of surface area to attack.
+</p>
+<p>
+The explanations are meant to be colloquial and none assume a knowledge of math beyond the first two years of university calculus, except for Dirichlet's proof (4.) which assumes you know the <a href="https://en.wikipedia.org/wiki/Group_(mathematics)#Definition_and_illustration">definition of a group</a>, <a href="https://en.wikipedia.org/wiki/Abelian_group">Abelian group</a>, and <a href="https://en.wikipedia.org/wiki/Group_homomorphism">group homomorphisms</a> (otherwise it would've been <em>even longer</em> than it is now). All but the first proof require quite a bit of set-up and machinery, whereas you could probably fit Euclid's direct proof on a business card if you wanted...
+</p>
+
+<p>Disclaimer: This page uses Javascript to render \( \KaTeX \).</p>
+
+<hr />
+
+<ol>
+    <li><a href="#euclid">Euclid's direct proof</a></li>
+    <li><a href="#euler1">Euler's proof using the zeta function v1</a></li>
+    <li><a href="#euler2">Euler's proof using the zeta function v2</a></li>
+    <li><a href="#dirichlet">Dirichlet's proof using characters of groups</a></li>
+</ol>
+
+<hr />
+
+<h2 id="euclid">Direct</h2>
+
+<p>Consider a finite list of primes, \( p_1,p_2,\ldots,p_n \). Then consider the product of all of these primes, \( p_1 p_2 \cdots p_n \). Now consider \( P \), the product plus one:
+\[
+P = p_1p_2 \cdots p_n + 1.
+\]
+If \( P \) is a prime, we have just found a new prime that was not in our previous list.</p>
+
+<p>If \( P \) is not a prime, then some other prime \( p_i \) divides \( P \). If this \( p_i \) were in our original list, it would also divide \( p_1p_2\cdots p_n \).</p>
+
+
+<p>But if \( p_i \) divides \( p_1p_2\cdots p_n \) <em>and</em> \( P = p_1p_2\cdots p_n + 1 \), this implies that \( p_i \) <span class="note">divides their difference:</span> \( P - (p_1p_2\cdots p_n) = 1 \).
+
+<span class="right-side">
+Probably most people would say this is trivial but I say nothing is trivial until you are able to thoroughly convince yourself of it. A scribbly proof: suppose \( p \in \mathbb Z \) divides integers \( a \) and \( b \). By definition this means \( a = pq_1 \) and \( b = pq_2 \) for some \( q_1,q_2 \in \mathbb Z \). This means \( a-b = pq_1 - pq_2 = p(q_1-q_2) \), so \( p \) must divide \( a - b \). \( \blacksquare \)
+</span>
+
+But no prime number divides \( 1 \), so \( p_i \) could not have been in our original list. Thus, in either case, there exists some prime that was not in our original list. \( \blacksquare \)</p>
+
+<p>Since our list was an arbitrary finite list of primes, this shows that for <em>any</em> finite list of primes, there will always exist another prime not contained in the list.</p>
+
+<details>
+    <summary>
+        Click for a nice dose of pedantry.
+    </summary>
+    <p>A lot of people have the misconception that this particular proof of Euclid's is a proof by contradiction. In fact, when I was first taught it, I was led to believe that this was an indirect proof.
+    <p>This is probably because it is often set up with an explicit assumption at the start—suppose that \( p_1,p_2,\cdots,p_n \) are <em>all the primes that exist</em>—and then seeks to contradict this supposition. But we never actually use that supposition anywhere in the proof. This proof applies to <em>any</em> finite list of primes, regardless of if we make the claim that these are all the primes that exist.</p>
+</details>
+
+<h2 id="euler1">Euler v1</h2>
+
+<p><strong>Disclaimer:</strong> In order to make this a <q>proper</q> proof, I should have made the definitions of convergence and what it means for a sequence/function to converge, very clear. But since this is an informal exposition, and I don't want to bog the reader down with too much detail so early on, I decided to elide over most of it and to keep explanations more on the side of intuition. <u>This doesn't excuse any possible <em>incorrect</em> statements, so if you see something strange do let me know.</u></p>
+
+<p>In this section we use the convention that a complex number \( s \in \mathbb C \) can be written \( s = \sigma + it \) where \( \sigma = \Re(s) \), i.e., \( \sigma \) is the real part of \( s \). We don't really do much with the imaginary part, \( \Im(s) = t \), but know that this notation exists and is fairly common (and I love the ridiculously fancy font that TeX uses for it).</p>
+
+<p>Euler's proof uses machinery from analytic number theory, namely the <em>zeta function</em>, which is a function \( \zeta : D \subset \mathbb C \rightarrow \mathbb C\), where \( D = \left\{ s \in \mathbb C \mid s = \sigma + it, \sigma > 1 \right\} \). It is defined by:
+\[
+\zeta(s) \mapsto \sum_{n=1}^{\infty} \frac{1}{n^s} = 1 + \frac{1}{2^s} + \frac{1}{3^s} + \cdots.
+\]
+We put such a constraint on our domain (namely, that the real part of \( s \) is strictly greater than \( 1 \)) because the zeta function does not converge otherwise. If you took Calculus II, you might be familiar with the fact that \( \zeta (1) \) is the harmonic series \( \frac{1}{1} + \frac{1}{2} + \frac{1}{3} + \frac{1}{4} + \cdots \), the classic example of a series whose terms get arbitrarily small (\( \lim_{n\rightarrow\infty} \frac{1}{n} = 0 \)), but actually diverges to infinity.
+</p>
+
+<details>
+<summary><em>Zeta function</em> sounds familiar...</summary>
+<p>You might have heard of the <em>Riemann hypothesis</em>, which is a literal million-dollar problem concerned with the roots of the zeta function's analytic continuation over the complex domain (called the <em>Riemann-Zeta function</em> where we see convergence for input values where \( 0 < \sigma \) and even for \( \sigma < 0 \)).</p>
+<p>Though, this is not entirely relevant to what Euler achieved (nearly 100 years before Riemann's functional equation), so I won't go into it further. However if you wish to make one million dollars it may be something you want to investigate personally.</p>
+</details>
+
+<p>Euler discovered that you could rewrite the zeta function, an infinite sum, as a product over the primes. This is sometimes called the <em>Euler product decomposition</em>:
+\[
+\sum_{n=1}^{\infty} \frac{1}{n^s} = 1 + \frac{1}{2^s} + \frac{1}{3^s} + \cdots = \prod_{p \text{ prime}} \frac{1}{(1-\frac{1}{p^s})}.
+\]
+Though this looks pretty implausible, we can gain some intuition as to how in the hell any mere mortal could've made this observation.</p>
+
+<p>First, we introduce the formula for the sum of the geometric series, which is a series of form
+\[
+\sum_{n=0}^\infty r^n = 1 + r + r^2 + r^3 + \cdots.
+\]
+This series converges if and only if \( \lvert r \rvert < 1 \), and it has a special formula when this is the case:
+\[
+\sum_{n=0}^\infty r^n = \frac{1}{1-r}.
+\]
+Already, we can see the resemblance between \( \frac{1}{1-r} \) in the above formula and \( \frac{1}{1-\frac{1}{p^s}} \) in Euler's product decomposition; let's rewrite it in order to better see this:
+\[
+    \frac{1}{1-\frac{1}{p^s}} = \sum_{n=0}^\infty \frac{1}{p^{sn}} = 1 + \frac{1}{p^s} + \frac{1}{p^{2s}} + \frac{1}{p^{3s}} + \cdots
+\]
+In other words, every factor of Euler's product decomposition is actually <em>the sum of an infinite geometric series!</em>
+</p>
+
+<p>Second, we briefly mention the fundamental theorem of arithmetic, which states that any positive integer can be written as the product of prime factors, each raised to a non-negative power—and that this product representation is <em>unique up to ordering</em>. A bit more formally:
+\[
+\forall x \in \mathbb Z^{> 0} ,\quad x = p_1^{\alpha_1}p_2^{\alpha_2}\cdots p_n^{\alpha_n},
+\]
+where \( p_i \) is a prime and \( \alpha_i \in \mathbb N \), and there is only one such factorization for each \( x \). We can then start to envision a relationship between every term of the zeta function's infinite sum \( \frac{1}{x^s} \) (since there is one such term for every positive integer \( x \)), and the reciprocals of the primes in the product decomposition.
+</p>
+<p>
+Finally, what might seem like a minor observation is actually crucial to why the decomposition works in the first place: the multiplicativity of exponentiation, i.e., \( (xy)^s = x^sy^s \).
+</p>
+<p>So, let's write out the first few terms of the Euler product using what we have just observed, to get a better idea of what it looks like:
+\[
+\prod_{p \text{ prime}} \frac{1}{1-\frac{1}{p^s}} = (1+\frac{1}{2^s}+\frac{1}{2^{2s}}+\cdots)(1+\frac{1}{3^s}+\frac{1}{3^{2s}}+\cdots)(1+\frac{1}{5^s}+\frac{1}{5^{2s}}+\cdots)\cdots
+\]
+How would we calculate such a product? Well, in a process analogous to the FOIL method you might have learned in middle school, we choose one term out of each parenthesized infinite sum and multiply them against each other:
+</p>
+<p>
+Every choice gives us a product that looks like:
+\[
+\frac{1}{2^{e_1 s}} \cdot \frac{1}{3^{e_2 s}} \cdot \frac{1}{5^{e_3 s}} \cdots
+\]
+where \( e_i \in \mathbb N \). There are two possibilities for this infinite product: either \( e_i > 0 \) for finitely many \( i \)'s or \( e_i > 0 \) for infinitely many \( i \)'s.
+</p>
+<p>Suppose that \( e_i > 0 \) for finitely many \( i \)'s. Then we ignore all the terms with \( e_i = 0 \) since \( p_i^{0s} = 1 \). So our product looks like
+\[
+\frac{1}{p_1^{e_1 s} p_2^{e_2 s} \cdots p_m^{e_m s}}
+\]
+for some finite \( m \). By the multiplicativity of exponentiation, we rewrite this as
+\[
+\frac{1}{(p_1^{e_1} p_2^{e_2} \cdots p_m^{e_m})^s}
+\]
+</p>
+<p>
+From the fundamental theorem of arithmetic, it follows that every choice yields a unique fraction \( \frac{1}{n^s} \) where \( n \in \mathbb Z^{>0} \). Then we sum over all such fractions, which is precisely the definition of the zeta function. <strong>We have just shown why the Euler product decomposition is reasonable</strong>, we haven't even gotten to his actual proof yet! <span class="right-side">We also don't give a formal proof of the Euler product decomposition here, but here is a <a href="https://en.wikipedia.org/wiki/Proof_of_the_Euler_product_formula_for_the_Riemann_zeta_function#The_Euler_product_formula">link</a> to one if you're interested; it starts pretty much where we left off (with our combinatorial argument based on the fundamental theorem of arithmetic) and involves an interesting <q>sieving</q> argument.</span> Thankfully, it is pretty concise, and is as follows:
+</p>
+<p><em>Proof.</em> Suppose there are a finite number of primes \( p_1,p_2,\cdots,p_\ell \). Suppose we have a sequence of real numbers, written \( (\sigma_k)_k \) and \( \lim_{k \rightarrow \infty} \sigma_k = 1 \). According to the Euler product decomposition, we can write:
+\[
+\zeta(\sigma_k) = \prod_{i=1}^\ell \frac{1}{1-\frac{1}{p^{\sigma_k}}}.
+\]
+Now we take the limit as \( k \rightarrow \infty \) and thus \( \sigma_k \rightarrow 1 \). The right-hand side converges to
+\[
+\prod_{i=1}^\ell \frac{1}{1-\frac{1}{p}},
+\]
+a finite product. <span class="note">But the left-hand side \( \zeta(\sigma_k) \) diverges.</span> <div class="right-side">You might be able to convince yourself of this by noting that the harmonic series, \( \zeta(1) \) diverges; so it makes sense that if we have a sequence \( (\sigma_k) \) and the terms of the sequence get arbitrarily close to \( 1 \) for large enough \( k \), then \( \zeta(\sigma_k) \) should diverge when we take the limit. <details><summary>A further explanation...</summary>...is on its way.</details></div>
+</p>
+<p>One side diverges while another converges? Ridiculous, absurd, contradiction! This means that our original supposition, <q>suppose there are a finite number of primes</q>, must have been wrong. Thus, there are an infinite number of primes. \( \blacksquare \)
+</p> 
+
+<h2 id="euler2">Euler v2</h2>
+
+<p>Euler, in his original proof, actually stated a corollary about the growth of primes, and proved a stronger statement:
+<div class="note">
+\[
+\sum_{p \text{ prime}} \frac{1}{p} = \infty.
+\]
+</div>
+<span class="right-side">What does this imply? Well, of course it means there are an infinite number of primes, but it also says that primes don't <q>grow very quickly</q>. (If they did, then this infinite sum would converge.) Compare this with the series \( \sum_{n=0}^\infty \frac{1}{n^2} \), which converges. This gives us the idea that squares grow faster than primes.
+</span>
+In order to prove this, we apply the real logarithm to Euler's product decomposition:
+<!-- \[
+\log \zeta(\sigma) = \log \prod_{p \text{ prime}} \frac{1}{1-\frac{1}{p^\sigma}} = \sum_p \log \frac{1}{1-\frac{1}{p^\sigma}}
+\]
+\[
+= \sum_p - \log \Big( 1 - \frac{1}{p^\sigma} \Big).
+\] -->
+\[
+\begin{align*}
+\log \zeta(\sigma) &= \log \prod_{p \text{ prime}} \frac{1}{1-\frac{1}{p^\sigma}}\\
+&= \sum_p - \log \Big( 1 - \frac{1}{p^\sigma} \Big)
+\end{align*}
+\]
+We rewrite the above expression using the power series expansion of \( \log \) to obtain:
+\[
+\sum_p \sum_{n=1}^\infty \frac{1}{np^{\sigma n}}.
+\]
+Then, we split the sum into two pieces: the \( n = 1 \) part and the \( n \ge 2 \) part:
+\[
+\sum_p \frac{1}{p^\sigma} + \sum_p \sum_{n=2}^\infty \frac{1}{np^{\sigma n}}.
+\]
+We claim that the second sum converges uniformly. This means that there exists a \( C > 0 \) such that for all \( \sigma > 1 \),
+<div class="note">
+\[
+\sum_p \sum_{n=2}^\infty \frac{1}{np^\sigma n} \le C.
+\]
+</div>
+<div class="right-side">
+This is just a claim for now. A proof of this uses some algebraic manipulation to bound this sum by a converging telescopic series.
+</div>
+Then
+\[
+\sum_p \frac{1}{p^\sigma} = \log \zeta(\sigma) - \sum_p \sum_{n=2}^\infty \frac{1}{np^{\sigma n}} \ge \log \zeta(\sigma) - C.
+\]
+Now consider the real sequence \( (\sigma_k) \) with \( \sigma_k > 1\) and \( \lim_k \sigma_k = 1 \).
+
+As \( k \rightarrow \infty \), we have that \( \zeta(\sigma_k) \rightarrow k \) since the harmonic series, \( \zeta(1) \), diverges to infinity. Thus, \( \log \zeta(\sigma_k) \) also tends to infinity. This implies that \( \sum_p \frac{1}{p^{\sigma_k}} \) tends to infinity. Finally, this implies that \( \sum_p \frac{1}{p} \) tends to infinity, and we are done. \( \blacksquare \)</p>
+
+<p>Specifically, Euler also observed that the growth of this series behaves logarithmically, which is related to the fact that for this series to converge, we would want the growth of the denominator to be faster than linear, asymptotically, and logarithmic growth is sublinear, i.e., \( \lim_{n \rightarrow \infty} \frac{x}{\log x} = \infty \).</p>
+
+<p>As someone who has surface level knowledge of asymptotic analysis from computer science classes, Euler's handwaviness here is perfectly fine with me :)
+</p>
+
+<h2 id="dirichlet">Group theoretic</h2>
+
+<h3>Background (group of units of \( \mathbb Z/N\mathbb Z \), group characters )</h3>
+
+<p>This proof is from Dirichlet and actually repurposes Euler's product decomposition using concepts from group theory. We actually don't need to dive into the expected technicalities of subgroups, congruence classes, conjugates, etc., we can shirk most of the cruft and focus on only what's necessary: the group of units of \( \mathbb Z / N \mathbb Z \), cyclic groups, orders, and characters.</p>
+
+<p>An important <span class="note">ring</span> <span class="right-side">A <em>ring</em> is a set \( R \) equipped with operations \( + \) and \( \cdot \) which we will call <q>addition</q> and <q>multiplication</q>, respectively, such that \( R \) is an abelian group under \( + \) and a monoid under \( \cdot \). (A monoid is like a group, minus the constraint that inverse elements must exist.) Also, multiplication is distributive over addition. A familiar example of a ring is \( (\mathbb Z, +, \cdot) \), i.e., the integers under the usual operations of integer addition and multiplication.</span> we will briefly consider as a starting point is \( \mathbb Z/N\mathbb Z \) (read, <q>Z mod NZ</q>), whose elements are the integers <em>modulo</em> some other integer \( N \). For example, the elements of \( \mathbb Z/4\mathbb Z \) is the set \( \left\{ \bar 0, \bar 1, \bar 2, \bar 3 \right\} \).</p>
+
+<p>The group of units of \( \mathbb Z/N\mathbb Z\), written \((\mathbb Z/N\mathbb Z)^\times\), is comprised of the <em>invertible</em> elements of \( \mathbb Z/N\mathbb Z \) (the invertible elements in a ring are also called the units). We will also refer to \( (\mathbb Z/N\mathbb Z)^\times \) as \( G_N \) for the sake of notational brevity. The group operation is the familiar integer multiplication, only now we have to consider the modulus, where \( a \cdot b \pmod n \equiv (a \bmod n \cdot b \bmod n) \bmod n \).</p>
+
+<p>Ex: In \( \mathbb Z/4\mathbb Z \), \( \bar 2 \cdot \bar 3 = \bar 2 \), since
+\[
+\begin{align*}
+2 \cdot 3 \pmod 4 &= (2 \bmod 4 \cdot 3 \bmod 4) \bmod 4\\
+&= 6 \bmod 4\\
+&= 2.
+\end{align*}
+\]
+Interestingly, \( \bar 3 \cdot \bar 3 = \bar 1 \). So in \( G_4 \) and in \( G_N \) in general, you can multiply two non-identity elements and get the identity. These are precisely the units. In the case just above, it turns out that \( \bar 3 \) is its own inverse.</p>
+
+<p>But how do we know that any given element in \( \mathbb Z/N\mathbb Z \) is a unit? Using a <span class="note">basic result from number theory</span><span class="right-side">I believe this is <a href="https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity">Bézout's lemma</a>, which arises from <a href="https://en.wikipedia.org/wiki/Euclidean_division">Ěuclidean division</a>.</span>, \( (\mathbb Z/N\mathbb Z)^\times \) can be written \( \left\{ n \in \mathbb Z/N \mathbb Z \mid \gcd(n,N) = 1 \right\} \). In other words,
+\[
+n \in \mathbb Z/N\mathbb Z \text{ has a multiplicative inverse } \iff \gcd(n,N) = 1.
+\]
+When \( \gcd(n,N) = 1 \) we also say that \( n \) is <em>coprime</em> with \( N \); i.e., they share no common factors other than \( 1 \). We enumerate the elements of some rings of integers modulo \( N \) and their corresponding groups of units below:
+</p>
+
+<p>
+\[
+\mathbb Z/2\mathbb Z = \left\{ \bar 0, \bar 1 \right\}
+\]
+\[
+G_2 = (\mathbb Z/2\mathbb Z)^\times = \left\{ \bar 1 \right\}
+\]
+\[
+\mathbb Z/6\mathbb Z = \left\{ \bar 0, \bar 1, \bar 2, \bar 3, \bar 4, \bar 5 \right\}
+\]
+\[
+G_6 = (\mathbb Z/6\mathbb Z)^\times = \left\{ \bar 1, \bar 5 \right\}
+\]
+</p>
+<p>
+<details>
+    <summary>What are the elements of \( \mathbb Z/4\mathbb Z \)? \( G_4\)?</summary>
+    \[
+    \mathbb Z/4\mathbb Z = \left\{ \bar 0, \bar 1, \bar 2, \bar 3 \right\}
+    \]
+    \[
+    G_4 = \left\{ \bar 1, \bar 3 \right\}
+    \]
+</details>
+</p>
+<p>
+<details>
+    <summary>Consider the elements of \( \mathbb Z/2\mathbb Z, \mathbb Z/3\mathbb Z \), and \( \mathbb Z/5\mathbb Z \), and their corresponding group of units \( G_2, G_3 \), and \( G_5 \). Can you make a more general conjecture based off of your observations? Could you prove this conjecture? (Hint: \(2,3,5\) are all prime...)</summary>
+    The observation is that the elements of \( G_p \) for \( p \) prime can be written \( \left\{ \bar 1, \ldots, \overline{p-1} \right\} \). Your explanation should follow something along the lines of the statement that a prime number is coprime to any other number (of course, except for itself). 
+</details>
+</p>
+<p>All \( G_N \)s are examples of <em>finite <span class="note">abelian groups</span></em> <span class="right-side">Named after Norwegian mathematician Niels Henrik Abel, who once complained of Gauss's proof style: <q>He is like the fox, who effaces his tracks in the sand with his tail</q>.</span> which will be of some significance later on.</p>
+
+<p>A <em>cyclic group</em> is a special kind of group, and as you'd expect, describes a group with a cyclic structure. Namely, it is the group you get when you take an element \( g \) and multiply it against itself:
+\[
+\langle g \rangle = \left\{ \ldots, g^{-3}, g^{-2}, g^{-1}, e, g, g^2, g^3, \ldots \right\}.
+\]
+In this case, \( g \) is called the <em>generator</em> of the cyclic group and we write \( \langle g \rangle \) to represent the group that \( g \) generates. Despite how it looks, cyclic groups <span class="note">don't necessarily have an infinite number of elements</span> <span class="right-side">Though infinite cyclic groups <em>do</em> exist, and are isomorphic to the <a href="https://en.wikipedia.org/wiki/Free_group">free group</a> (with one generator|of rank 1). An example is the additive group of integers, whose generator is simply \( \left\{ 1 \right\} \). This is a very fancy of way stating that you can get to any integer just by adding to or subtracting \( 1 \) by itself repeatedly.</span>. For example, it's often the case that \( g^k = e \) for some \( k \in \mathbb Z \). Then \( g^{k+1} = g \) and the cycle (lol) continues. More generally it is easy to see that \( g^{nk} = e \) for any \( n \in \mathbb Z \).</p>
+<p>The minimal \( k \) such that \( g^k = e \) is called the <em>order</em> of \( g \) and it coincides with the terminology where the <em>order of a group</em> is the number of elements of the group. To see this, let \( g \) be a generator and let the order of \( g \) equal \( 3 \). Then,
+\[
+\langle g \rangle = \left\{ e, g, g^2 \right\}
+\]
+since \( g^3 = e \). But where are the inverses, you may ask? Well, note that \( g g^2 = g^2 g = g^3 = e \), so \( g^2 = g^{-1} \). And so on. But in general, the order of an element versus the order of a group is not the same thing.
+</p>
+<p>
+<details><summary>Q: \( G_4 \) is a cyclic group with two elements. What are the orders of each element?</summary>
+    <p>First we recall the elements of \( G_4 \):
+    \[
+    G_4 = \left\{ \bar 1, \bar 3 \right\}.
+    \]
+    \( \bar 1 \) clearly has order \( 1 \) since it is the identity. \( \bar 3 \) then cannot have order \( 1 \) by the same reasoning. We check \( (\bar 3)^2 = 3^2 \bmod 4 = \bar 1 \). Thus, \( \bar 3 \) has order \( 2 \) and it is the generator of the cyclic group.</p>
+</details>
+All \( G_N \) for \( N = 2,4,p^k,2p^k \) where \( p^k \) is a power of an odd prime number are cyclic. This was proved by Gauss.
+</p>
+<p>
+The <em>character</em> of a finite Abelian group \( G \) is a group homomorphism \( \chi : G \rightarrow \mathbb C^{\times} \) (where \( \mathbb C^{\times} \) is the multiplicative group of complex numbers <em>sans</em> \( 0 \)).
+</p>
+<p>
+From this barebones definition it is still possible to conclude some important results: \( \chi(e) = 1 \) and if \( g \) has order \( k \), then \( \chi(g) \) is a \( k \)th root of unity. This should make sense, since if \(g^k = e \), then \( \chi(g^k) = \chi(e) = 1 \), and \( \chi(g^k) = (\chi(g))^k \) by definition of group homomorphism, so \( (\chi(g))^k = 1 \).
+</p>
+<details>
+<summary>
+What is a root of unity?
+</summary>
+<p>An \( n \)th root of unity is a complex number \( z \in \mathbb C \) such that when raised to the \( n \)th power, equals \( 1 \), i.e., \( z^n = 1 \). The set of \( 1 \)st roots of unity is just the singleton set \( \mu_1 = \left\{ 1 \right\} \). The set of \( 2 \)nd roots of unity are \( \mu_2 = \left\{ -1, 1 \right\} \) and the set of \( 4 \)th roots of unity are \( \mu_4 = \left\{ -1,1,i,-i \right\} \).</p>
+<p>In general, the \( n \)th roots of unity can be written as \( \mu_n = \left\{ z \in \mathbb C \mid z = \exp(\frac{2k\pi i}{n}) \text{ for } k = 0,\ldots,n-1 \right\} \).</p>
+</details>
+<p>
+Now we turn to the notion of the <em>group of characters</em>. Suppose we have an abelian group \( G \) and that \( \chi, \chi' \) are two of its characters. Define their product \( \chi\chi' \), another a character, as the following:
+\[
+(\chi\chi')(g) = \chi(g)\chi'(g) \quad \forall g \in G.
+\]
+Under this operation we obtain the group of characters of \( G \), or the dual group of \( G \):
+\[
+\widehat{G} = \left\{ \chi : G \rightarrow \mathbb C^\times \mid \chi(gh)=\chi(g)\chi(h) \right\}.
+\]
+The identity element of \( \widehat G \) is the <em>trivial/principal character</em> \( \chi_1(g) = 1, \forall g \in G \). To figure out all the other elements of \( \widehat G \) we will need a bit more information.
+</p>
+<p>Say, all the \( G_N \)s we were considering earlier are abelian, and they have a certain structure to them, so let's look into their corresponding dual groups \( \widehat{G}_N \).</p>
+<p>We examine \( \widehat{G}_5 \).
+</p>
+<p>
+One useful relation concerning \( G_N \) and \( \widehat{G}_N \) is the <em>Schur orthogonality relations</em> (there are two of them):
+</p>
+<p>
+<strong>First Schur Orthogonality Relation:</strong> For \( \chi \in \widehat{G}_N \),
+\[
+\frac{1}{\lvert G_N \rvert} \sum_{\bar n \in G_N} \chi(\bar n) =
+\left\{ 
+    \begin{array}{l}
+    1 \quad \chi = \chi_1,\\
+    0 \quad \chi \ne \chi_1.
+    \end{array} 
+\right.
+\]
+</p>
+<p>
+<strong>Second Schur Orthogonality Relation:</strong> For \( \bar n \in G_N \),
+\[
+\frac{1}{\lvert G_N \rvert} \sum_{\chi \in \widehat{G}_N} \chi(\bar n) =
+\left\{ 
+    \begin{array}{l}
+    1 \quad \bar n = \bar 1,\\
+    0 \quad \bar n \ne \bar 1.
+    \end{array} 
+\right.
+\]
+</p>
+<p>
+The second Schur orthogonality relation states that there exists a linear combination of the \( \chi \)s of \( \widehat{G}_N \) which is nonzero and equal to 1 when its argument is \( \bar 1 \); i.e., it is the <em>(indicator|characteristic) function</em> of \( \left\{ \bar 1 \right\} \subset G_N \).
+</p>
+<p>
+From this we obtain the linear combination that Dirichlet requires, the indicator function of any \( \bar a \in G_N \).
+</p>
+<p>
+For \( \bar a \in G_N \),
+\[
+\frac{1}{\lvert G_N \rvert} \sum_{\chi \in \widehat{G}_N} \chi(\bar a^{-1})\chi(\bar a) =
+\left\{ 
+    \begin{array}{l}
+    1 \quad \bar n = \bar a,\\
+    0 \quad \bar n \ne \bar a.
+    \end{array} 
+\right.
+\]
+</p>
+
+<h3>Dirichlet's theorem on primes in arithmetic progressions</h3>
+<p>
+Dirichlet's theorem states that for \( N \ge 2 \), consider \( 0 \le a \le N - 1 \) such that \( \gcd(a,N) = 1 \). Then the sequence \( (a+kN)_{k=0}^\infty \) contains infinitely many primes.
+</p>
+<p>
+So to consider a concrete example, consider \( N = 8 \)  and \( a = 3 \). Certainly, \( 0 \le 3 \le 7\) and \( \gcd(3,8) = 1 \). Then Dirichlet's theorem says that the following sequence
+\[
+(a+kN)_{k} = (3, 11, 19, 27, 35, \ldots)
+\]
+contains infinitely many primes. In other words, there are infinitely many primes congruent to \( a \) modulo \( N \) (in this case, \( 2 \bmod 7 \)), which is an even stronger statement than simply saying <q>there are an infinite number of primes</q>.
+</p>
+<p>
+In the previous section we went over how Euler proved that
+\[
+\sum_{p \text{ prime}} \frac{1}{p} = \infty.
+\]
+Now Dirichlet wants to show that when \( \gcd(a,N) = 1 \),
+\[
+\sum_{\substack{p \text{ prime},\\ p \equiv a \pmod N}} \frac{1}{p} = \infty.
+\]
+Showing that the sequence of the <em>reciprocals</em> of your original terms diverges is the same thing as showing that there are an infinite number of them, but additionally that they <q>grow slowly</q>. Dirichlet's statement builds off of Euler's second proof by saying that even if we only consider a <em>subset</em> of all primes, the sum <em>still</em> diverges.
+</p>
+<p>
+Dirichlet considers sums of form
+\[
+L(s,\chi) = \sum_{n=1}^\infty \frac{\chi(n)}{n^s}
+\]
+now called <em>Dirichlet L-functions</em>. \( \chi \) is a Dirichlet character and \( s \) is a complex number with \( \Re(s) > 1 \). It, too, has an analytic continuation and can be extended to a meromorphic function on the whole complex plane, though we will not be dealing with this extension now.
+</p>
+<p>
+What makes Dirichlet L-functions useful is that they are <em>completely multiplicative</em>, allowing us to bypass the problem of the product of mods not being multiplicative. Due to their multiplicativity, they can be written as an Euler product in the complex half-plane where \( \sigma > 1 \).
+</p>
+<p>
+Let us define Dirichlet characters in more detail. They are functions \( \chi : \mathbb N \rightarrow \mathbb C \) satisfying:
+</p>
+<ol>
+    <li>\( \chi(m)\chi(n) = \chi(mn) \) for \( m,n \in \mathbb N\)</li>
+    <li>\( \chi(n+N) = \chi(n) \) for \( n \in \mathbb N\)</li>
+    <li>\( \chi(n) \ne 0 \) if \( \gcd(n,N) = 1 \) and \( \chi(n) = 0 \) otherwise.</li>
+</ol>
+<p>
+It is fair to be confused on how exactly these \( L \)-functions will get us to the sum desired. But the heart of this proof comes from the fact that due to the Schur orthogonality properties, a <em>linear combination</em> of the \( L \)-functions does equal our desired sum. In other words,
+\[
+c_1(L(s,\chi_1)) + c_2(L(s,\chi_2)) + \cdots + c_n(L(s,\chi_n)) = \sum_{\substack{n=1\\ n \equiv a \mod N}} \frac{1}{n^s},
+\]
+for some \( c_1,c_2\ldots,c_n \in \mathbb C \). We'll write the linear combination as
+\[
+\sum_i c_i L(s,\chi_i)
+\]
+for the sake of brevity.
+</p>
+<p>
+Consider the inequality that lay at the core of Euler's second proof:
+\[
+\log \zeta(\sigma) - C \le \sum_{p \text{ prime}} \frac{1}{p^s} \le \sum_{p \text{ prime}} \frac{1}{p}.
+\]
+By showing that the leftmost expression diverged, Euler showed that the rightmost expression also had to diverge, thereby proving the infinitude of primes. We will do something very similar here, by showing that for \( \sigma > 1 \) in this inequality,
+\[
+\sum_i c_i \log L(\sigma,\chi_i) - C \le \sum_{\substack{p \text{ prime}\\p \equiv a \pmod N}} \frac{1}{p^\sigma} \le \sum_{\substack{p \text{ prime}\\p \equiv a \pmod N}}  \frac{1}{p},
+\]
+the leftmost expression tends to infinity as \( \sigma \rightarrow 1 \).
+</p>
+<p>
+Some important differences between Euler's proof and Dirichlet's proof is that for Dirichlet, the leftmost expression is a sum over \( i \). So suppose one \( L \)-function \( L(s,\chi_i) \) has a <span class="note">pole</span> <span class="right-side">A <em>zero</em> of a complex-differentiable function \( f \) is a point \( z \) such that \( f(z) = 0 \). A <em>pole</em> of a complex-differentiable function \( f \) is a point \( z \) such that \( 1/f(z) = 0 \). A pole is a kind of <em>singularity</em>, which is a point where a function is not well-behaved (i.e., not differentiable or not analytic).</span> at 1 while another \( L \)-function \(L(s,\chi_j) \) has a zero at 1. Then, when we take logarithms, one term in the linear combination goes to \( \infty \) while the other term goes to \( -\infty \) (since \( \log \infty = \infty \) and \( \log 0 = -\infty \)). Adding infinities to negative infinities is unclear, so we will have to carefully consider the behavior of every \( L \)-function near \( s = 1 \) when we take limits.
+</p>
+<p>
+Let us now define the Dirichlet \( L \)-functions. Consider the group \( G_N \) for some fixed \( N \ge 2 \). Consider the dual group \( \widehat{G}_N \). For a character \( \chi \in \widehat{G}_N \), define \( \tilde\chi : \mathbb N \rightarrow \mathbb C \) via
+\[
+\tilde\chi(n) =
+\left\{ 
+    \begin{array}{l}
+    \chi(\bar n) \quad \text{if } \gcd(n,N) = 1,\\
+    0 \quad \text{if } \gcd(n,N) > 1.
+    \end{array} 
+\right.
+\]
+Any Dirichlet character \( \tilde \chi \) induces a character \( \chi \in \widehat{G}_N \); just set \( \chi(\bar n) = \tilde \chi(n) \) for \( \bar n \in G_N \). In fact there is a bijection \( \chi \mapsto \tilde\chi \) between \( \widehat{G}_N \) and the set of Dirichlet characters modulo \( N \), so we will simply write \( \chi(n) \) instead of \( \tilde\chi(n) \) to refer to the Dirichlet \( L \)-function; the meaning will be clear from context.
+</p>
+<p>
+For \( \chi \in \widehat{G}_N \) define the Dirichlet L-function corresponding to \( \chi \)
+\[
+L(s,\chi) = \sum_{n=1}^\infty \frac{\chi(n)}{n^s}.
+\]
+The terms of the above sum are only non-zero for \( n \) such that \( \gcd(n,N)=1 \). It is absolutely convergent for \( \Re(s) = \sigma > 1 \), since \( \chi(n) \) can equal either \( 1 \) or \( 0 \), thus \( \lvert \frac{\chi(n)}{n^s} \rvert \le \lvert \frac{1}{n^s} \rvert \) for all \( n \), and so by the <span class="note">comparison test</span> <span class="right-side">The standard result from Calculus II: if you know \( \sum_n b_n \) converges, and you know that for sufficiently large \( n \), \( 0 \le a_n \le b_n \), then \( \sum_n a_n \) must converge.</span>, absolute convergence for \( \sum_n \frac{\chi(n)}{n^s} \) follows from the absolute convergence of \( \zeta(s) = \sum_n \frac{1}{n^s} \).
+</p>
+<p>
+Here, we'll make a few important claims (I may write down the proof for them later, or at least an explanation) that will be crucial in our final proof of Dirichlet's theorem:
+</p>
+<ol>
+<li>\( L(s,\chi_1) \) has an analytic continuation to \( \sigma > 0 \) and has a pole at \( s = 1 \) (which arises from the fact that \( \zeta(s) \) has a pole at \( 1 \)).</li>
+<li>For \( \chi \ne \chi_1, L(s,\chi) \) has an analytic continuation to \( \sigma > 0 \) and it does not have a pole at \( s = 1 \) (it turns out with some clever algebra, you can rewrite the partial sum for \( L(\sigma,\chi) \) as an absolutely convergent series for \( \sigma > 0 \)).</p>
+<li>For \( \chi \ne \chi_1, L(1,\chi) \ne 0 \).</li>
+</ol>
+<p>
+Now that we have properly defined Dirichlet \( L \)-functions, we claim that they have an Euler product decomposition:
+\[
+L(s,\chi) = \prod_{p \text{ prime}} \Big( 1-\frac{\chi(p)}{p^s} \Big)^{-1}
+\]
+where \( \Re(s) = \sigma > 1 \).
+</p>
+<p>Similarly as before, we don't give a proof of this formula here, but the proof follows the proof for the original product decomposition very closely, using the same sieving argument.</p>
+<p>As before, we apply the logarithm to Euler's product decomposition for the \( L \)-functions for each \( \chi \in \widehat{G}_N \):
+\[
+\log L(s,\chi) = -\sum_p \log \Big( 1-\frac{\chi(p)}{p^s} \Big)
+\]
+Note we are taking the logarithm of complex numbers. Unlike the real logarithm, the complex logarithm is not an injective function, in fact there are a potentially infinite number of <em>branches</em> each of which differ by a multiple of \( 2\pi \) due to the periodicity of the \( \sin \) and \( \cos \) in Euler's formula (\( e^{\theta i} = \cos(\theta) + i\sin(\theta) \)). In order to <span class="note">force injectivity</span> <span class="right-side">You might have seen this before in the case of, say, \( \sin \) and \( \arcsin \). Since \( \sin \) is not an injective function (it is \( 2\pi \) periodic), \( \arcsin \) is only defined on the interval \( [-1, 1] \).</span> (which is needed to take the \( \log \), the inverse function of \( \exp \)), we restrict the codomain to a <q>strip</q> \( (-\pi, \pi] \) which is called the <em>principal branch</em> or the <em>principal logarithm</em>.
+</p>
+<figure>
+    <img src="../media/principal-branch.gif" />
+    <figcaption>The many branches of the graph of the complex logarithm, versus the single branch of the principal logarithm. From <a href="https://mathworld.wolfram.com/PrincipalBranch.html">here</a>. Each <q>tier</q> of the complex log is exactly \( 2\pi \) apart on the vertical axis.</figcaption>
+</figure>
+<p>The principal logarithm has a power series expansion which we use to rewrite the above expression. We will also use the same trick to separate the sum into two parts: one where \( n=1 \) and the other where \( n \ge 2 \):
+\[
+\log L(s,\chi) = \sum_p\sum_{n=1}^\infty \frac{\chi(p)^n}{np^{sn}} = \sum_p \frac{\chi(p)}{p^{s}} + \sum_p \sum_{n=2}^\infty \frac{\chi(p)^n}{np^{sn}}.
+\]
+Now, you might be able to guess what we're going to do next, as this part of the proof follows very similarly from Euler's first proof. Indeed, we show the second term in the right-hand side (the double sum where \( n \ge 2 \)) to be convergent by taking its norm:
+\[
+\Big\lvert \sum_p\sum_{n=2}^\infty \frac{\chi(p)^n}{np^{sn}} \Big\rvert \le \sum_p\sum_{n=2}^\infty \frac{\chi(p)^n}{np^{\sigma n}} \le 1 \quad \text{ for } \sigma > 1
+\]
+We know that the norm of the second term is then bound by some constant \( C > 0 \). We write this using <span class="note"><q>Big-O</q> notation</span>: <div class="right-side">Formally, Big-Oh notation says that a function \( f(x) = O(g(x)) \) if there exists a constant \( M > 0 \) and a real number \( x_0 \) such that
+\[
+\lvert f(x) \rvert \le M \lvert g(x) \rvert \quad \text{for all } x \ge x_0.
+\]
+It is used a lot in computer science, particularly the asymptotic analysis of programs, because you usually see it in the context of <q>how does varying input size effect my program's runtime</q>.
+</div>
+\[
+\log L(s,\chi) = \sum_p \frac{\chi(p)}{p^s} + O(1).
+\]
+Finally we use the linear combination (which is also the indicator function for \( \bar a \in G_N \) in order to write:
+\[
+\frac{1}{\lvert G_N \rvert} \sum_\chi \chi(\bar a^{-1}) \log L(s,\chi) = \sum_{p \equiv a} \frac{1}{p^s} + O(1).
+\]
+Consider the limit as we take \( \sigma \rightarrow 1 \). Then, note that for \( \chi \ne \chi_1 \), the terms of the sum on the left-hand side converge to a finite value since \( L(s,\chi) \ne 0 \). But for \( \chi = \chi_1 \), we have that there is a pole at \( \sigma = 1 \) which diverges to infinity. Therefore the right-hand side of the equality also diverges.
+</p>
+<p>We're basically done. Since
+\[
+\sum_{p \equiv a} \frac{1}{p^\sigma} \le \sum_{p \equiv a} \frac{1}{p},
+\]
+and the left-hand side must diverge as \( \sigma \rightarrow 1 \), the right-hand side must diverge, and this is exactly what we wanted to show.
+</p>
+<p>Now, the big corollary to all of this work, the cherry on top of the towering sundae, is that there are an infinite number of primes congruent to an \( a \) modulo \( N \), which implies that there are an infinite number of primes in general. \( \blacksquare \)</p>
+<p>I know this proof sort of has the vibe of using a industrial-grade tractor to build a small sandcastle. But it turns out that in order to prove Dirichlet's theorem <em>in its full generality</em>, we needed some pretty powerful tools from analytic number theory and group theory. Some proofs also use calculus.</p>
+
+</main>
+<footer>
+</footer>
+</body></html>

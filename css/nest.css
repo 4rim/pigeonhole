@@ -1,0 +1,173 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+body {
+    background-color:#260d1a;
+    color:#d47d7d;
+    font-family: "Dejavu Serif", serif;
+}
+
+::selection {
+	background-color: #d47d7d;
+	color: #260d1a;
+}
+
+a {
+	text-decoration-style: dotted;
+	color: #d47d7d;
+}
+
+blockquote {
+    color: #b26869;
+}
+
+main {
+    max-width: 550px;
+    margin-left: 10px;
+}
+
+main * {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    line-height: 150%;
+}
+
+nav {
+    background-image: url("../media/vergesslicher-angel-top.jpg");
+    width: 100%;
+    height: 250px;
+    background-size: auto;
+    background-repeat: no-repeat;
+    padding: 10px;
+}
+
+nav a {
+    color: #260d1a;
+}
+
+a:hover, a:active {
+	text-decoration-style: solid;
+}
+
+.aphorism {
+    display: inline-block;
+}
+
+.aphorism img {
+    float: right;
+}
+
+blockquote footer {
+    border-top: 1px #d47d7d dotted;
+    text-align: right;
+    font-size: 0.9rem;
+    background-image: none;
+}
+
+footer {
+    background-image: url("../media/vergesslicher-angel-bottom.jpg");
+    width: 100%;
+    height: 250px;
+    background-size: auto;
+    background-repeat: no-repeat;
+    padding: 10px;
+}
+
+.gallery {
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 0.8rem;
+    row-gap: 0.8rem;
+}
+
+.bcard {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 1;
+    padding: 5%;
+    font-size: smaller;
+    color: #d47d7d;
+    /* background-color: #d47d7d; */
+    background-image: url('./images/puffin.jpg');
+}
+
+.card-1 {
+    grid-column-start: 2;
+    grid-column-end: 4;
+    grid-row-start: 3;
+    grid-row-end: 3;
+    background-color: #260d1a;
+    color: #d47d7d;
+    padding: 5%;
+    font-size: smaller;
+    background-image: url('./images/paper.jpg');
+}
+
+.card-2 {
+    grid-column-start: 2;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    grid-row-end: 2;
+    background-image: url('./images/hasse.png');
+    padding: 5%;
+    border: 1px #d47d7d solid;
+}
+
+.card-3 {
+    grid-column-start: 3;
+    grid-column-end: 3;
+    grid-row-start: 4;
+    grid-row-end: 4;
+    padding: 5%;
+    border: 1px #d47d7d solid;
+}
+
+.entry {
+    padding: 6%;
+    border: 1px #d47d7d solid;
+    overflow-y: scroll;
+}
+
+.outlink {
+    padding: 6%;
+    border: 1px #d47d7d dotted;
+    background-color: rgba(211.1, 125, 125, 0.8);
+    color: #260d1a;
+    overflow-y: scroll;
+}
+
+.outlink a {
+    color: #260d1a;
+}
+
+.outlink .title:after {
+    content: " â†—";
+}
+
+.title {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.entry .tag {
+    font-size: 0.7rem;
+    font-style: italic;
+    text-align: right;
+}
+
+.entry:hover {
+    color: #260d1a;
+    background-color: rgba(211.1, 125, 125, 0.8);
+    border: 1px #260d1a dotted;
+    a {
+    color: #260d1a;
+    }
+}
+
+.teaser {
+    font-size: 90%;
+}
